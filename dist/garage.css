@@ -1,0 +1,30 @@
+.vehicle-art{height:100px;padding:0 10px;margin-bottom:12px}
+.vehicle-art svg{display:block;margin:auto;max-width:190px;height:100%}
+.parked-vehicle{position:absolute;z-index:5;left:5%;bottom:10%;width:15%;height:19%;border:0;background:none!important;padding:0;min-width:70px;filter:drop-shadow(3px 5px 3px #0007)}
+.parked-vehicle svg{width:100%;height:100%}
+.parked-vehicle span{position:absolute;top:-14px;left:0;right:0;font-size:11px;color:#ffe3a8;text-shadow:0 2px 4px #000}
+.parked-vehicle:hover{filter:brightness(1.2) drop-shadow(3px 5px 3px #0007)}
+.scene.headlight .scene-shade{background:radial-gradient(ellipse at 60% 70%,#ffedbb28,transparent 65%)}
+.scene.vehicle-flash .siren-red{animation:flash-light .35s step-end infinite}
+.scene.vehicle-flash .siren-blue{animation:flash-light .35s step-end infinite reverse}
+#trip{position:absolute;z-index:9;left:-28%;bottom:17%;width:26%;height:27%;pointer-events:none;animation:drive-through .9s ease-in-out forwards;filter:drop-shadow(4px 8px 4px #0008)}
+#trip svg{width:100%;height:100%}
+#trip.flight{bottom:43%}
+#trip.flight .rotor{transform-origin:83px 13px;animation:rotor-turn .15s linear infinite}
+#trip.sprint{animation-duration:.6s}
+.card .use-department{background:#6a4c33;color:#ffe2a1}
+#stationVisual{border:1px solid #74604a;background:#151b30;border-radius:8px;padding:18px;margin:15px 0;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;min-height:95px}
+#stationVisual svg{width:72px;height:72px}
+#stationVisual .radio-symbols{font-size:28px;letter-spacing:8px;color:#e5c58c}
+#stationControls{display:flex;gap:10px;flex-wrap:wrap}
+#stationControls button{flex:1;min-width:110px;min-height:46px}
+#stationControls button svg{width:34px;height:34px;display:block;margin:0 auto 5px}
+#stationControls .selected-colour{border-color:#ffd67e;background:#6a4c33}
+#stationFeedback{color:#e9c47e;min-height:28px}
+.suspect-file{background:#302c43;border:1px solid #7c6a56;padding:9px 13px;border-radius:4px;font-size:13px;flex:1;min-width:145px}
+.department-details{font-size:13px;color:#b9b2be}
+@keyframes drive-through{0%{left:-28%;opacity:0}12%{opacity:1}88%{opacity:1}100%{left:105%;opacity:0}}
+@keyframes rotor-turn{0%{transform:scaleX(1)}50%{transform:scaleX(.1)}100%{transform:scaleX(1)}}
+@keyframes flash-light{0%{opacity:1}50%{opacity:.2}}
+@media(max-width:760px){.parked-vehicle{width:18%;height:21%;left:4%;bottom:12%}.parked-vehicle span{font-size:9px}.vehicle-art{height:75px;padding:0}#trip{width:35%;height:32%}.card .use-department{font-size:12px}#stationControls button{font-size:13px;min-width:90px}}
+@media(prefers-reduced-motion:reduce){#trip{animation:none;left:36%;opacity:1}#trip.flight .rotor,.scene.vehicle-flash .siren-red,.scene.vehicle-flash .siren-blue{animation:none}}

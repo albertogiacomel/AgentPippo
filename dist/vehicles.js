@@ -1,0 +1,17 @@
+'use strict';
+(function(root){
+ const info=[['Campanello','Suona per salutare i cittadini. Perfetta per le stradine del quartiere.'],['Faro della moto','Illumina la scena: al molo gli indizi si vedono meglio.'],['Sirena della pattuglia','Accendi i lampeggianti e annuncia l’arrivo di Pippo.'],['Partenza sprint','Spostamenti più rapidi per le missioni fuori quartiere.'],['Vano dei pacchi','Carica i pacchi ordinati e consegnali al festival.'],['Rotore e radar','Raggiunge il faro isolato e sorvola la costa.']];
+ function svg(index){
+  const wheel=(x,y=73,r=15)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#23253c"/><circle cx="${x}" cy="${y}" r="${r-6}" fill="#ad9380"/><circle cx="${x}" cy="${y}" r="3" fill="#eaca8f"/>`;
+  const badge='<path d="M80 49l3 7 8 1-6 5 2 7-7-4-6 4 1-7-5-5 8-1z" fill="#e8b961"/>';
+  const driver='<path d="M64 40l4-16h18l7 16" fill="#213f68"/><circle cx="77" cy="17" r="9" fill="#efc08e"/><path d="M64 12l24-2-3-6H68z" fill="#283851"/><path d="M76 28l3 9 3-9" fill="#497e6b"/>';
+  let body='';
+  if(index===0)body=wheel(30,72,19)+wheel(124,72,19)+'<path d="M30 72l24-35 26 35H30l30-29 64 29-13-44m-11 0h20M45 34h19" stroke="#b78352" stroke-width="6" fill="none"/>'+driver+'<path d="M72 43l16 12-8 18m-9-30l-9 20 14 9m12-40l20 1" stroke="#3a4964" stroke-width="7" fill="none"/>';
+  if(index===1)body=wheel(35)+wheel(124)+'<path d="M21 58h43l15-20h26l25 24-9 7H38z" fill="#4e7498"/><path d="M71 40h30l-7-9H75z" fill="#27314b"/><path d="M109 40l-7-21h17" stroke="#c8b190" stroke-width="5" fill="none"/><circle cx="120" cy="22" r="6" fill="#fae5a2"/>'+driver+'<path d="M71 40l8 13 22 5" stroke="#384965" stroke-width="8" fill="none"/>';
+  if(index===2||index===3){const sporty=index===3;body='<path d="M15 63V47l26-9 18-22h43l22 25 23 6v24H15z" fill="'+(sporty?'#356778':'#d5d5c1')+'"/><path d="M47 38l15-17h36l17 17z" fill="#71a9b0"/><path d="M82 21v17M17 53h128" stroke="#274868" stroke-width="7"/>'+wheel(40)+wheel(122)+badge+'<path d="M68 16h25v-6H68z" fill="#b9aba1"/><path class="siren-red" d="M68 10h12v6H68z" fill="#dd7460"/><path class="siren-blue" d="M81 10h12v6H81z" fill="#73a6d1"/><circle cx="71" cy="29" r="6" fill="#efc08e"/><path d="M63 26h16l-3-5H65z" fill="#243955"/>';if(sporty)body+='<path d="M7 47h22m-23 9h12" stroke="#ecc786" stroke-width="3"/>';}
+  if(index===4)body='<rect x="10" y="17" width="88" height="51" rx="3" fill="#325573"/><path d="M98 30h28l21 22v16H98z" fill="#d9c29d"/><path d="M105 35h18l14 17h-32z" fill="#79a7b0"/><path d="M14 27h78M14 56h78" stroke="#476e8a" stroke-width="4"/>'+wheel(37)+wheel(123)+'<path d="M39 35h30v23H39z" fill="#ba8050"/><path d="M54 35v23" stroke="#e4ba78" stroke-width="6"/><circle cx="114" cy="43" r="6" fill="#efc08e"/>';
+  if(index===5)body='<path d="M14 53l31-12 10-11h61q31 11 27 28l-27 10H57L39 57H14z" fill="#4f7d95"/><path d="M105 33q23 6 28 21H99z" fill="#9dc2c0"/><path d="M41 58l-22-5-6-16" stroke="#dfcda1" stroke-width="5" fill="none"/><path d="M68 72v8m39-8v8M47 80h77" stroke="#d7b988" stroke-width="4"/>'+badge+'<path d="M83 29V14" stroke="#d1b385" stroke-width="5"/><path class="rotor" d="M25 13h124" stroke="#e6d5ad" stroke-width="5"/><circle cx="111" cy="45" r="7" fill="#efc08e"/>';
+  return `<svg viewBox="0 0 160 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#292538" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">${body}</g></svg>`;
+ }
+ root.PortoVehicles={info,svg};
+})(globalThis);

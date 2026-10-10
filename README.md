@@ -34,6 +34,10 @@ Ogni caso assegna 5 stelle una sola volta. Mezzi e reparti costano 2 stelle cias
 
 ## Architettura e verifiche
 
+Garage operativo: ogni mezzo acquistato si può selezionare gratuitamente, viene salvato e appare nella scena e negli spostamenti. Bicicletta con campanello, moto con faro, pattuglia con lampeggianti, sportiva con partenza rapida, camion per le consegne e elicottero per raggiungere il faro. L’avanzamento richiede un mezzo adeguato al prossimo caso. I salvataggi precedenti mantengono progressi, stelle e acquisti e selezionano il mezzo più recente.
+
+Tutti i reparti costruiti restano accessibili: ufficio con fascicolo e partenze, radio che riproduce lo spartito trovato, laboratorio per mescolare le bottiglie raccolte, archivio per confrontare i due indizi, officina per ordinare e consegnare i pacchi, centro operativo con costruzione dell’aquilone e radar. Gli strumenti agiscono sullo stesso stato degli enigmi nelle scene: nessuna duplicazione di ricompense o reset dei pacchi cambiando veicolo.
+
 ```mermaid
 flowchart LR
  Art[Fondali e sprite PNG] --> UI[game.js e CSS]
