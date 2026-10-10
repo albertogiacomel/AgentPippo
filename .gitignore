@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.log
+node_modules/
+artifacts/*.zip
+.openai/*local*

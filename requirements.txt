@@ -1,0 +1,1 @@
+# Nessuna dipendenza Python: applicazione statica HTML/CSS/JavaScript.
