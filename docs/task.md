@@ -1,5 +1,7 @@
 # Contratto e verifica — revisione 2
 
+Nota storica: questo contratto descrive la revisione Sites iniziale. Lo stato attuale del progetto GitHub e la nuova CI sono documentati in `resume.md` e `deployment.md`.
+
 Task: porto_buffo_v2_20261010. Owner: Codex. Priorità: normale. Scope L1: correggere gioco web isolato dopo feedback dell’utente. Rischio basso. Privacy: reference grafica fornita dall’utente. Effetti: file del progetto e aggiornamento del medesimo sito Sites privato. Benchmark: not_applicable, nessun obiettivo prestazionale dichiarato.
 
 Problema: la versione iniziale aveva emoji, scena ripetuta e sei casi basati sulla stessa sequenza di azioni, senza veri enigmi. La revisione aggiunge fondali illustrati, sprite basate sul riferimento dell’utente, azioni contestuali, spostamenti tra luoghi, dialoghi selezionabili, diario, hint progressivi e sei meccaniche diverse. La carriera e i potenziamenti sono preservati.

@@ -1,0 +1,14 @@
+{
+  "name": "agent-pippo",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Avventura punta e clicca per piccoli investigatori",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "test": "node scripts/game_test.cjs",
+    "test:browser": "node scripts/browser_test.cjs",
+    "dev": "node scripts/serve.cjs",
+    "start": "node scripts/serve.cjs"
+  }
+}

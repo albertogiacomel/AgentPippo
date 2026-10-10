@@ -2,6 +2,28 @@
 
 Avventura web originale in italiano per bambini dai 6 anni. Estetica di avventura cartoon classica, sei fondali illustrati, personaggio animato ispirato alla reference dell’utente, dialoghi comici e storia collegata del Barone Sottosopra. Nessun combattimento, timer, penalità o acquisto reale.
 
+Repository: https://github.com/albertogiacomel/AgentPippo . **Per riprendere nei prossimi giorni leggere [docs/resume.md](docs/resume.md)**: stato, preferenze, mappa del codice, verifiche e limiti.
+
+## Avvio e hosting
+
+Richiede Node.js 22 o successivo per gli strumenti; nessuna dipendenza da installare.
+
+```sh
+git clone https://github.com/albertogiacomel/AgentPippo.git
+cd AgentPippo
+npm run build
+npm test
+npm run dev
+```
+
+Aprire http://127.0.0.1:3000 . Su Windows con Edge, `npm run test:browser` verifica anche la campagna reale.
+
+**Vercel:** importare il repository; `vercel.json` configura framework Other, build `npm run build`, output `dist`.
+
+**Cloudflare Pages:** collegare il repository; framework None, build `npm run build`, output `dist`, branch `main`. Dettagli e limiti dei salvataggi in [docs/deployment.md](docs/deployment.md).
+
+GitHub Actions verifica build e motore a ogni push e pull request. Non include il test Edge specifico per Windows.
+
 ## Giocare
 
 Sito: https://agente-pippo-porto-buffo.brownauk3.chatgpt.site (accesso privato del proprietario). In locale aprire `dist/index.html`: nessun build, installazione o server necessario.

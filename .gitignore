@@ -5,3 +5,7 @@ node_modules/
 artifacts/*
 !artifacts/README.md
 .openai/*local*
+.vercel/
+.wrangler/
+.env
+.env.*
