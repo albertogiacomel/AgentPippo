@@ -6,11 +6,12 @@ Repository: https://github.com/albertogiacomel/AgentPippo . **Per riprendere nei
 
 ## Avvio e hosting
 
-Richiede Node.js 22 o successivo per gli strumenti; nessuna dipendenza da installare.
+Richiede Node.js 22 o successivo per gli strumenti. Wrangler è una dipendenza di sviluppo per il backend Cloudflare; il gioco nel browser non richiede librerie esterne.
 
 ```sh
 git clone https://github.com/albertogiacomel/AgentPippo.git
 cd AgentPippo
+npm ci
 npm run build
 npm test
 npm run dev
@@ -23,6 +24,8 @@ Aprire http://127.0.0.1:3000 . Su Windows con Edge, `npm run test:browser` verif
 **Cloudflare Pages:** collegare il repository; framework None, build `npm run build`, output `dist`, branch `main`. Dettagli e limiti dei salvataggi in [docs/deployment.md](docs/deployment.md).
 
 GitHub Actions verifica build e motore a ogni push e pull request. Non include il test Edge specifico per Windows.
+
+Backend Cloudflare gratuito preparato: **Salvataggi** permette copie cloud e ripresa con codice, quando D1 è configurato. Guida e stato attivazione in [docs/cloud_backend.md](docs/cloud_backend.md). `npm run test:cloud` verifica API e database nel runtime Cloudflare locale; la CI esegue anche questa verifica.
 
 ## Giocare
 

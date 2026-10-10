@@ -1,0 +1,6 @@
+#cloudDialog input{display:block;width:100%;box-sizing:border-box;margin:8px 0 18px;padding:12px;border:1px solid #a48f69;border-radius:6px;background:#151b30;color:#f2d59a;font:inherit}
+#cloudDialog label{display:block;font-weight:bold}
+.cloud-actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.cloud-actions button,#cloudConnect{min-height:46px;padding:12px}
+#cloudFeedback{color:#f2d59a;min-height:24px}
+@media(max-width:600px){.tools{flex-wrap:wrap;justify-content:flex-end}.cloud-actions button{flex:1 1 100%}}

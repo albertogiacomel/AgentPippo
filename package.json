@@ -3,12 +3,23 @@
   "version": "0.3.0",
   "private": true,
   "description": "Avventura punta e clicca per piccoli investigatori",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "node scripts/build.cjs",
-    "test": "node scripts/game_test.cjs",
+    "test": "node scripts/game_test.cjs && node scripts/backend_test.mjs",
+    "test:cloud": "node scripts/cloud_runtime_test.cjs",
+    "dev:cloud": "wrangler pages dev dist --d1 DB --persist-to artifacts/cloudflare_local",
     "test:browser": "node scripts/browser_test.cjs",
     "dev": "node scripts/serve.cjs",
     "start": "node scripts/serve.cjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261006.1": true
   }
 }

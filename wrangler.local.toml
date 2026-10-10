@@ -1,0 +1,9 @@
+# Local test database only. Never deploy this configuration.
+name = "agent-pippo-local"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-10"
+[[d1_databases]]
+binding = "DB"
+database_name = "agent-pippo-local"
+database_id = "DB"
+migrations_dir = "migrations"

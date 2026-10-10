@@ -2,6 +2,10 @@
 
 Stato salvato: 2026-10-10. Repository previsto: https://github.com/albertogiacomel/AgentPippo . Cartella locale: `source/AgentPippo` nella home utente. Questo documento è il punto di ingresso per le prossime sessioni.
 
+Aggiornamento backend: utente autorizza Cloudflare D1 purché gratuito (eccezione esplicita alla regola PostgreSQL per questo gioco). Prima fase implementata: salvataggi cloud manuali, codice di ripresa, validazione e revisioni atomiche. Leggere `cloud_backend.md`. Test reale workerd/D1 locale e interfaccia cloud disponibili. Credenziali NAS valide ma non autorizzate all’account del link: scelta account richiesta, nessun deployment remoto eseguito. KB e CBMM NAS ora raggiungibili; CBMM del repository NAS pronto, non un indice di questo progetto Windows.
+
+Nuovi file: `backend/save.mjs`, `functions/api/save.js`, `migrations/0001_saves.sql`, `dist/cloud.js`, `dist/cloud.css`. Il motore resta locale; non dichiararlo spostato interamente sul server. L’ambiente Cloudflare locale richiede `npm ci`; Wrangler è vincolato nel lockfile. `npm run test:cloud` verifica D1 reale. Vercel rimane compatibile per il frontend statico, senza API Cloudflare.
+
 ## Obiettivo e preferenze
 
 Gioco web punta e clicca per bambino di 6 anni, in italiano, avventura umoristica ispirata alle meccaniche classiche di Monkey Island. Personaggi originali, nessun asset della serie. Il protagonista poliziotto Pippo segue il riferimento grafico fornito dall’utente: capelli castani, giacca blu, camicia verde, distintivo, pantaloni grigi. Evitare scene ripetitive e missioni tutte uguali; mantenere enigmi reali e feedback senza punizioni.

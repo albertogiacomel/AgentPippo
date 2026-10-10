@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {handleSave} from '../backend/save.mjs';
+import E from '../dist/engine.js';
+const url='https://pippo.example/api/save',key='a'.repeat(64);
+const request=(method='GET',payload,token=key,origin)=>new Request(url,{method,headers:{Authorization:'Bearer '+token,...(payload?{'Content-Type':'application/json'}:{}),...(origin?{Origin:origin}:{})},body:payload?JSON.stringify(payload):undefined});
+assert.equal((await handleSave(request(),{})).status,503);
+assert.equal((await handleSave(request('DELETE'),{})).status,405);
+assert.equal((await handleSave(request('GET',undefined,key,'https://other.example'),{DB:{}})).status,403);
+assert.equal((await handleSave(request('GET',undefined,'bad'),{DB:{}})).status,401);
+assert.equal((await handleSave(request('PUT',{state:{},revision:0}),{DB:{}})).status,400);
+assert.equal((await handleSave(request('PUT',{state:E.initialState(),revision:-1}),{DB:{}})).status,400);
+assert.equal((await handleSave(request('PUT',{state:E.initialState(),revision:0,padding:'x'.repeat(17000)}),{DB:{}})).status,413);
+console.log('PASS: cloud API methods, unavailable binding, authentication, foreign origins, invalid states/revisions and request size.');
