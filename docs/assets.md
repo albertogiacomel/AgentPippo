@@ -1,0 +1,23 @@
+# Asset illustrati
+
+Generazione con tool integrato imagegen; nessun fallback CLI/API. Reference di Pippo: immagine caricata dall'utente il 2026-10-10. Asset finali copiati nel progetto, non dipendono dai percorsi Codex.
+
+- `dist/assets/scenes.png`: atlas 3 colonne × 2 righe, sei fondali.
+- `dist/assets/characters.png`: quattro personaggi su alpha trasparente; Berto, Ada e Barone usati nel gioco.
+- `dist/assets/pippo.png`: atlas 4 colonne × 2 righe; quattro frame camminata, idle, dialogo, ispezione, indicazione. Fondo trasparente.
+- Gli atlas sono visualizzati tramite background-position CSS; nessuna modifica raster manuale. I piccoli oggetti dell'inventario sono SVG nativi del gioco.
+
+## Prompt finali
+
+### Fondali
+
+Use case: illustration-story. Asset type: background atlas for a children's point-and-click comedy adventure, inspired by the painterly cartoon art direction of The Curse of Monkey Island. Create ONE landscape image split into an EXACT 3-column by 2-row grid, six equal rectangular panels, no borders, no gutters. Each panel is a distinct beautifully drawn game environment. Row1 col1: crooked colorful Caribbean seaside village bakery plaza, warm sunset, cobblestone floor, whimsical wonky buildings. Row1 col2: moonlit pirate harbor with wooden jetty, moored sailing boats, hanging lanterns, deep teal sea. Row1 col3: sunny tropical ice cream kiosk and festival square, pastel parasols, playful large cones. Row2 col1: theatrical mansion interior with stage, velvet drapes, absurdly ornate throne, theatrical masks. Row2 col2: cluttered quirky parcel warehouse interior with wooden shelves, colorful crates, whimsical mechanical sorting machine. Row2 col3: tall lighthouse on windy island clifftop with clouds and a strange cloud-making contraption, twilight. Style: high quality hand-painted 2D adventure backgrounds, exaggerated curved architecture, inked contours, detailed textures, cinematic atmospheric lighting, rich deep teal, navy, purple and glowing amber. Entire bottom 35 percent of EACH panel is clear walkable ground with foreground perspective suitable for overlaying game characters and clickable props. Environment art only, NO people, no UI, no letters or words, no watermark. Each panel horizontal 16:9 approximately, whole atlas 3:1 landscape.
+
+### Personaggi secondari
+
+Use case: illustration-story. Production character atlas for a lighthearted children's adventure game. Four original adult cartoon characters, each standing full-body in a separate equal-width cell on a single horizontal sheet, genuinely transparent background, no borders or gutters, all feet aligned, consistent scale and margins. From left to right: a friendly young adult town messenger in a blue jacket; an elderly stout harbor keeper with curled white moustache wearing striped teal sailor shirt and captain cap, holding a lantern; a jovial woman baker with white chef hat, flour apron, orange skirt, holding rolling pin; an eccentric theatrical baron wearing purple frock coat and large decorative hat, curled moustache, exaggerated silly friendly face. Whimsical hand-drawn 2D adventure cartoon, strong expressive silhouettes, ink contours, cel shading with painterly textures, warm approachable characters. No weapons, no letters, no scenery, no UI. Entire sheet 2:1 landscape with four cells.
+
+### Sprite Pippo
+
+Use case: illustration-story. Input image 1 is CHARACTER DESIGN REFERENCE ONLY, not an atlas to preserve or directly edit. Asset type: production sprite atlas for a browser point-and-click adventure for a 6 year old. Create ONE sprite sheet of the SAME character inspired closely by the provided reference: cheerful youthful male police detective, brown swept hair, navy blue jacket, green shirt and tie, gold round badge on left chest, gray trousers, black shoes, large friendly expressive eyes and cartoon proportions. Exactly 4 columns and 2 rows of EIGHT equal rectangular cells, no borders, no gutters, every full-body character centered within its cell, feet on exact same baseline, generous transparent margins, consistent scale. Top row left to right: walking to right frame1, walking to right frame2, walking to right frame3, walking to right frame4. He wears a navy police peaked cap in walking frames. Bottom row left to right: idle three quarter front standing smiling cap on; speaking three quarter front with one hand gesturing; inspecting holding a magnifying glass; pointing right with arm. Clean hand-drawn 2D cel shaded cartoon like the supplied image, detailed readable silhouettes, no scenery, no words, no extra items outside characters, no duplicate cells beyond requested 8 poses. Real transparent alpha background. Entire sheet landscape 2:1 approximately.
+

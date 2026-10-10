@@ -1,0 +1,11 @@
+.pippo-sprite{background-image:url('assets/pippo.png');background-size:400% 200%;background-position:0 100%}
+.char-1{background-size:341% 100%;background-position:29.36% 0}
+#pippo{width:22%;height:44%;left:35%}
+#pippo.pose-talk{background-position:33.333% 100%}
+#pippo.pose-inspect{background-position:66.667% 100%}
+#pippo.pose-point{background-position:100% 100%}
+#pippo.walking{animation:pippo-walk .55s step-end infinite}
+.speaker-medallion .pippo-sprite{width:130px;height:130px;margin-left:-33px}
+@keyframes pippo-walk{0%{background-position:0 0}25%{background-position:33.333% 0}50%{background-position:66.667% 0}75%{background-position:100% 0}}
+@media(max-width:760px){#pippo{width:28%;height:46%}.speaker-medallion .pippo-sprite{width:90px;height:90px;margin-left:-23px}}
+@media(prefers-reduced-motion:reduce){#pippo.walking{animation:none}}
