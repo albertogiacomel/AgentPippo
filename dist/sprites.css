@@ -8,6 +8,7 @@
 #pippo.pose-inspect{background-position:66.667% 100%}
 #pippo.pose-point{background-position:100% 100%}
 #pippo.walking{animation:pippo-walk .55s step-end infinite}
+#pippo.facing-left{transform:scaleX(-1)}
 .speaker-medallion .pippo-sprite{width:130px;height:130px;margin-left:-33px}
 @keyframes pippo-walk{0%{background-position:0 0}25%{background-position:33.333% 0}50%{background-position:66.667% 0}75%{background-position:100% 0}}
 @media(max-width:760px){#pippo{width:28%;height:46%}.speaker-medallion .pippo-sprite{width:90px;height:90px;margin-left:-23px}}
