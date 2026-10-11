@@ -7,14 +7,22 @@ const voices=[{name:'English Natural',lang:'en-GB'},{name:'Italian Local',lang:'
 const context={console,SpeechSynthesisUtterance:function(text){this.text=text;},speechSynthesis:{getVoices:()=>voices,cancel:()=>canceled++,resume(){},speak:u=>spoken.push(u)}};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../dist/speech.js'),'utf8'),context);
 const speech=context.PippoSpeech;
-assert.equal(speech.voiceFor('it').name,'Microsoft Elsa Online Natural');
+assert.equal(speech.voiceFor('it',undefined,'Ada').name,'Microsoft Elsa Online Natural');
 assert.equal(speech.voiceFor('en').lang,'en-GB');
 assert.equal(speech.voiceFor('it',[]),undefined);
+const mixed=[{name:'Microsoft Elsa Online Natural',lang:'it-IT'},{name:'Microsoft Cosimo',lang:'it-IT'},{name:'Microsoft Diego Online Natural',lang:'it-IT'}];
+for(const name of ['Pippo','Berto','Berto il guardiano','Barone Sottosopra','Professor Scombussolo'])assert.equal(speech.voiceFor('it',mixed,name).name,'Microsoft Diego Online Natural',name+' uses a male voice');
+for(const name of ['Ada','Ada la fornaia'])assert.equal(speech.voiceFor('it',mixed,name).name,'Microsoft Elsa Online Natural',name+' uses a female voice');
+assert.equal(speech.voiceFor('it',mixed.slice(0,2),'Pippo').name,'Microsoft Cosimo','Male local voice takes priority over female natural voice');
+assert.equal(speech.character('Ada la fornaia').pitch,1.06);
 assert.equal(speech.spokenText('Berto: «Sole → Luna!»'),'Sole , poi Luna!');
+assert.equal(speech.spokenText('Attenzione: la chiave è nel baule.'),'Attenzione: la chiave è nel baule.');
 speech.speak('Prima frase. Seconda frase!','it','Berto');
-assert.equal(spoken.length,1);assert.equal(spoken[0].lang,'it-IT');assert.equal(spoken[0].pitch,.92);
-spoken[0].onend();assert.equal(spoken.length,2);
+assert.equal(spoken.length,2,'All sentences are queued without waiting for unreliable end events');assert.equal(spoken[0].lang,'it-IT');assert.equal(spoken[0].pitch,.92);
+assert.equal(spoken.map(u=>u.text).join(' '),'Prima frase. Seconda frase!');
 speech.stop();spoken[1].onend();assert.equal(spoken.length,2);
 speech.speak('Nuovo dialogo.','en');assert.equal(spoken[2].lang,'en-GB');
+const E=require('../dist/engine.js');
+for(const chapter of E.cases){const start=spoken.length,text=chapter.intro+' '+chapter.brief;speech.speak(text,'it');assert.equal(spoken.slice(start).map(u=>u.text).join(' '),speech.spokenText(text),'Complete chapter narration is queued');}
 assert.ok(canceled>=3);
 console.log('Speech verified: Italian voice priority, sentence sequencing, cancellation and English fallback.');

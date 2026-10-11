@@ -46,6 +46,9 @@ async function run(){
  await command('Emulation.setDeviceMetricsOverride',{width:1280,height:1100,deviceScaleFactor:1,mobile:false});
  await evaluate(`window.PippoI18n.update({language:${JSON.stringify(language)}})`);
  assert.equal(await evaluate('document.documentElement.lang'),language);
+ for(let i=0;i<20;i++){if(await evaluate("speechSynthesis.getVoices().some(v=>v.lang.startsWith('it'))"))break;await delay(100);}
+ const voiceReport=await evaluate("(()=>{const S=window.PippoSpeech;return {available:speechSynthesis.getVoices().map(v=>({name:v.name,language:v.lang,gender:S.genderOf(v)})),characters:['Pippo','Berto il guardiano','Ada la fornaia','Barone Sottosopra'].map(name=>{const voice=S.voiceFor('it',undefined,name);return {name,wanted:S.character(name).gender,selected:voice?.name,gender:voice?S.genderOf(voice):'unavailable'};})};})()");
+ fs.writeFileSync(path.join(artifacts,'voice_verification.json'),JSON.stringify(voiceReport,null,2),'utf8');
  const manualSpeech=await evaluate("(()=>{const original=window.PippoSpeech.speak;let captured;window.PippoSpeech.speak=(...args)=>captured=args;window.PippoGame.setVoice(false);document.getElementById('read').click();window.PippoSpeech.speak=original;return {language:captured?.[1],text:captured?.[0],automatic:window.PippoGame.getState().voice};})()");
  assert.equal(manualSpeech.language,language);assert.ok(manualSpeech.text.length>0);assert.equal(manualSpeech.automatic,false,'Manual read works with automatic narration disabled');
  const target=await evaluate("(()=>{const r=document.getElementById('settingsButton').getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()");
