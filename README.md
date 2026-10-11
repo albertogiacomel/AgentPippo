@@ -25,6 +25,8 @@ Aprire http://127.0.0.1:3000 . Su Windows con Edge, `npm run test:browser` verif
 
 GitHub Actions verifica build e motore a ogni push e pull request. Non include il test Edge specifico per Windows.
 
+Ogni push su **main** pubblica automaticamente il gioco e il backend su Cloudflare, dopo il passaggio dei test. Le pull request verificano il codice senza pubblicare. Il workflow controlla anche le API della versione pubblicata.
+
 Backend Cloudflare gratuito preparato: **Salvataggi** permette copie cloud e ripresa con codice, quando D1 è configurato. Guida e stato attivazione in [docs/cloud_backend.md](docs/cloud_backend.md). `npm run test:cloud` verifica API e database nel runtime Cloudflare locale; la CI esegue anche questa verifica.
 
 ## Giocare

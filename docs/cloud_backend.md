@@ -34,6 +34,12 @@ migrations_dir = "migrations"
 
 Il Direct Upload con trascinamento dei soli asset e il deploy Vercel statico non attivano le Functions Cloudflare. In quei casi il gioco locale continua a funzionare e il pannello segnala cloud non disponibile. Il backend richiede che sito e API siano sullo stesso dominio.
 
+## Collegamento GitHub automatico
+
+La pubblicazione usa GitHub Actions e Wrangler perché Cloudflare non consente di convertire Direct Upload in integrazione Git nativa. Ogni push su `main` esegue build e test, poi il job `Publish Cloudflare` pubblica lo stesso commit su `agent-pippo.pages.dev` e verifica salvataggi e conflitti sul servizio remoto. Le pull request non hanno accesso al job di pubblicazione. Il token è nel secret cifrato del repository `CLOUDFLARE_API_TOKEN`; non è in Git. I deploy di produzione sono serializzati. Nuove migrazioni D1 richiedono esecuzione manuale prima del deploy; il workflow non modifica lo schema automaticamente.
+
+Fonte: https://developers.cloudflare.com/pages/get-started/direct-upload/
+
 ## Verifiche locali
 
 Verifica remota esplicita: `npm run test:cloud:live`, con `CLOUDFLARE_API_TOKEN` disponibile nel solo processo. Il test crea una partita sintetica e cancella esclusivamente quella riga D1 alla fine. Non è eseguito automaticamente dalla CI e non modifica le partite dei giocatori.

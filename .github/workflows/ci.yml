@@ -1,5 +1,7 @@
 name: Verify game
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -12,3 +14,27 @@ jobs:
       - run: npm run build
       - run: npm test
       - run: npm run test:cloud
+  deploy:
+    name: Publish Cloudflare
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: agent-pippo-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy game and backend
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: '291702df5c8eef8684918f4f92ca4c4d'
+        run: npx wrangler pages deploy dist --project-name agent-pippo --branch main --commit-hash "$GITHUB_SHA"
+      - name: Verify live cloud saves
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm run test:cloud:live

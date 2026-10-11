@@ -10,6 +10,8 @@ Aggiornamento 2026-10-11: token dell’account indicato dall’utente verificato
 
 Pubblicazione Cloudflare completata e verificata tramite `npm run test:cloud:live`: sito HTTP 200, copia/ripresa, isolamento, invalid state, foreign origin, conflitto tra due scritture e pulizia della partita sintetica PASS. Per riprendere nei prossimi giorni usare questa URL e questa cartella. Le credenziali fornite in chat sono state usate solo in memoria nei processi: non sono state salvate in file, GitHub o KB. Per future pubblicazioni autenticare Wrangler o fornire il token tramite ambiente sicuro.
 
+Collegamento automatico GitHub (2026-10-11): `.github/workflows/ci.yml` pubblica sul progetto Pages esistente dopo i test, esclusivamente per push su `main`. Pull request eseguono i test senza pubblicare. Il token di deploy è nel secret cifrato GitHub `CLOUDFLARE_API_TOKEN`, escluso dai file e dalla KB. Il job di produzione è serializzato e verifica le API live, eliminando la propria partita sintetica. L’integrazione usa Actions + Direct Upload; la dashboard Pages non mostra un collegamento Git nativo. Le migrazioni D1 future restano manuali e vanno applicate prima di pubblicare codice che le richiede.
+
 ## Obiettivo e preferenze
 
 Gioco web punta e clicca per bambino di 6 anni, in italiano, avventura umoristica ispirata alle meccaniche classiche di Monkey Island. Personaggi originali, nessun asset della serie. Il protagonista poliziotto Pippo segue il riferimento grafico fornito dall’utente: capelli castani, giacca blu, camicia verde, distintivo, pantaloni grigi. Evitare scene ripetitive e missioni tutte uguali; mantenere enigmi reali e feedback senza punizioni.
