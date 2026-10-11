@@ -14,7 +14,7 @@ Fonti: https://developers.cloudflare.com/workers/platform/pricing/ e https://dev
 
 ## Attivazione nell’account scelto
 
-Configurazione AgentePippo del 2026-10-11: account `291702df5c8eef8684918f4f92ca4c4d`; progetto Pages `agent-pippo`; database D1 `agent-pippo`, UUID `82f87023-a583-4e66-ac43-fdde44b1a07e`. Binding di produzione in `wrangler.toml`, schema remoto applicato. Le anteprime non hanno accesso al DB di produzione. URL: https://agent-pippo.pages.dev . Verificare la pubblicazione con le API e i test prima di dichiararla operativa.
+Configurazione AgentePippo del 2026-10-11: account `291702df5c8eef8684918f4f92ca4c4d`; progetto Pages `agent-pippo`; database D1 `agent-pippo`, UUID `82f87023-a583-4e66-ac43-fdde44b1a07e`. Binding di produzione in `wrangler.toml`, schema remoto applicato. Le anteprime non hanno accesso al DB di produzione. URL operativo: https://agent-pippo.pages.dev . Pubblicazione e test sul servizio remoto completati con successo: creazione/ripresa, isolamento codici, stato non valido, origine estranea, revisione obsoleta, scritture simultanee. Partita sintetica di verifica eliminata.
 
 1. Autenticare Wrangler con `npx wrangler login`, oppure usare credenziali già gestite nel relativo ambiente senza copiarle nel repository.
 2. Verificare account e piano Free. Creare D1 `agent-pippo` dalla dashboard oppure `npx wrangler d1 create agent-pippo`.
@@ -35,6 +35,8 @@ migrations_dir = "migrations"
 Il Direct Upload con trascinamento dei soli asset e il deploy Vercel statico non attivano le Functions Cloudflare. In quei casi il gioco locale continua a funzionare e il pannello segnala cloud non disponibile. Il backend richiede che sito e API siano sullo stesso dominio.
 
 ## Verifiche locali
+
+Verifica remota esplicita: `npm run test:cloud:live`, con `CLOUDFLARE_API_TOKEN` disponibile nel solo processo. Il test crea una partita sintetica e cancella esclusivamente quella riga D1 alla fine. Non è eseguito automaticamente dalla CI e non modifica le partite dei giocatori.
 
 ```sh
 npm ci

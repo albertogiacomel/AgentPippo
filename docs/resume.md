@@ -8,6 +8,8 @@ Nuovi file: `backend/save.mjs`, `functions/api/save.js`, `migrations/0001_saves.
 
 Aggiornamento 2026-10-11: token dell’account indicato dall’utente verificato attivo, accesso Pages/D1 confermato. Progetto remoto `agent-pippo`, URL https://agent-pippo.pages.dev ; DB D1 `agent-pippo`, binding DB configurato in `wrangler.toml`; schema remoto applicato. Nessun upgrade a pagamento. Pubblicazione con `npx wrangler pages deploy dist --project-name agent-pippo --branch main`, usando credenziali nell’ambiente del processo. Non inserire token nei file. giacomel.info rimane indipendente. Il deploy è Direct Upload: un push GitHub verifica la CI ma **non** ripubblica automaticamente Pages.
 
+Pubblicazione Cloudflare completata e verificata tramite `npm run test:cloud:live`: sito HTTP 200, copia/ripresa, isolamento, invalid state, foreign origin, conflitto tra due scritture e pulizia della partita sintetica PASS. Per riprendere nei prossimi giorni usare questa URL e questa cartella. Le credenziali fornite in chat sono state usate solo in memoria nei processi: non sono state salvate in file, GitHub o KB. Per future pubblicazioni autenticare Wrangler o fornire il token tramite ambiente sicuro.
+
 ## Obiettivo e preferenze
 
 Gioco web punta e clicca per bambino di 6 anni, in italiano, avventura umoristica ispirata alle meccaniche classiche di Monkey Island. Personaggi originali, nessun asset della serie. Il protagonista poliziotto Pippo segue il riferimento grafico fornito dall’utente: capelli castani, giacca blu, camicia verde, distintivo, pantaloni grigi. Evitare scene ripetitive e missioni tutte uguali; mantenere enigmi reali e feedback senza punizioni.

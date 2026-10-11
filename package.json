@@ -10,6 +10,7 @@
     "build": "node scripts/build.cjs",
     "test": "node scripts/game_test.cjs && node scripts/backend_test.mjs",
     "test:cloud": "node scripts/cloud_runtime_test.cjs",
+    "test:cloud:live": "node scripts/cloud_live_test.mjs",
     "dev:cloud": "wrangler pages dev dist --d1 DB --persist-to artifacts/cloudflare_local",
     "test:browser": "node scripts/browser_test.cjs",
     "dev": "node scripts/serve.cjs",
