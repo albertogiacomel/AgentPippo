@@ -5,6 +5,7 @@ const path=require('node:path');
 const http=require('node:http');
 const {spawn}=require('node:child_process');
 const project=path.resolve(__dirname,'..'),artifacts=path.join(project,'artifacts');
+const dist=path.resolve(project,process.env.AGENT_PIPPO_DIST||'dist');
 const errors=[];let browser,connection,server,cleanupCommand,browserClosed=false;
 const language=process.env.PIPPO_LANGUAGE||'it';
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -12,9 +13,9 @@ async function run(){
  fs.mkdirSync(artifacts,{recursive:true});
  server=http.createServer((request,response)=>{
   const pathname=new URL(request.url,'http://localhost').pathname;
-  const filename=path.join(project,'dist',pathname==='/'?'index.html':pathname);
-  if(!filename.startsWith(path.join(project,'dist')+path.sep)){response.writeHead(403);response.end();return;}
-  try{const extension=path.extname(filename);const content=fs.readFileSync(filename,extension==='.png'?undefined:'utf8');response.writeHead(200,{'Content-Type':{'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.svg':'image/svg+xml'}[extension]||'application/octet-stream'});response.end(content);}catch(error){response.writeHead(404);response.end('Not found');errors.push('HTTP '+filename+': '+error.message);}
+  const filename=path.join(dist,pathname==='/'?'index.html':pathname);
+  if(!filename.startsWith(dist+path.sep)){response.writeHead(403);response.end();return;}
+  try{const extension=path.extname(filename);const content=fs.readFileSync(filename,['.png','.webp'].includes(extension)?undefined:'utf8');response.writeHead(200,{'Content-Type':{'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml'}[extension]||'application/octet-stream'});response.end(content);}catch(error){response.writeHead(404);response.end('Not found');errors.push('HTTP '+filename+': '+error.message);}
  });
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const url=process.env.AGENT_PIPPO_URL||'http://127.0.0.1:'+server.address().port;
@@ -104,7 +105,8 @@ async function run(){
  await delay(1000);for(let i=0;i<100;i++){if(await evaluate("document.readyState==='complete'&&Boolean(window.PippoGame)&&document.querySelectorAll('[data-id]').length>0"))break;await delay(100);}
  await command('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await click('#reset');await click('#confirmReset');await delay(1000);for(let i=0;i<100;i++){if(await evaluate("document.readyState==='complete'&&Boolean(window.PippoGame)&&document.querySelectorAll('[data-id]').length>0"))break;await delay(100);}await verifyWalking();await screenshot('v2_mobile.png');assert.equal(await evaluate('document.documentElement.scrollWidth<=window.innerWidth'),true);
  const dimensions=await evaluate("[...document.querySelectorAll('[data-id]')].map(e=>({id:e.dataset.id,w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height}))");assert.ok(dimensions.length>0&&dimensions.every(d=>d.w>=44&&d.h>=44),'Visible touch targets at least 44px');
- const imageCheck=await evaluate("Promise.all(['assets/scenes.png','assets/characters.png','assets/pippo.png','assets/vehicles.png','assets/props.png'].map(src=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve(i.naturalWidth>0);i.onerror=()=>resolve(false);i.src=src})))");assert.ok(imageCheck.every(Boolean));
+ const extension=fs.existsSync(path.join(dist,'assets','scenes.webp'))?'webp':'png';
+ const imageCheck=await evaluate(`Promise.all(${JSON.stringify(['scenes','characters','pippo','vehicles','props'].map(name=>'assets/'+name+'.'+extension))}.map(src=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve(i.naturalWidth>0);i.onerror=()=>resolve(false);i.src=src})))`);assert.ok(imageCheck.every(Boolean));
  const settingsTarget=await evaluate("(()=>{const r=document.getElementById('settingsButton').getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()");await command('Input.dispatchMouseEvent',{type:'mousePressed',button:'left',clickCount:1,...settingsTarget});await command('Input.dispatchMouseEvent',{type:'mouseReleased',button:'left',clickCount:1,...settingsTarget});assert.equal(await evaluate("document.getElementById('settingsDialog').open"),true,'Mobile settings opens with a pointer');await roundTrip();await screenshot('settings_mobile.png');await click('#closeSettings');
  assert.deepEqual(errors,[],'No browser errors or missing resources');
  fs.writeFileSync(path.join(artifacts,'browser_verification.json'),JSON.stringify({timestamp:new Date().toISOString(),status:'PASS',campaign:'six chapters completed through UI',negativeCases:'wrong riddle, wrong melody, wrong mixture, incomplete evidence, wrong suspect, wrong parcel order, wrong final directions',saveReload:true,resetCancel:true,mobileWidth:390,mobileOverflow:false,touchTargets:dimensions,errors},null,2),'utf8');

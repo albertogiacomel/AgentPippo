@@ -86,3 +86,25 @@ flowchart LR
 Il test browser gioca tutti i sei capitoli con l’interfaccia reale, prova errori e blocchi, ricarica i progressi, annulla il reset e verifica il layout a 390 px. Screenshot e report sono in `artifacts/`, esclusi da Git. Non ci sono dipendenze JavaScript esterne, font remoti o nuove CLI applicative. Gli script sono test runner, non CLI con parsing di parametri.
 
 Struttura: `dist/` sito; `scripts/` test; `docs/` contratto e asset; `artifacts/` report e pacchetti. Conformità R66: modifica L1 isolata, test negativi e runtime, documentazione allineata, migrazione dati e prevenzione dei blocchi. Limiti NAS in `docs/task.md`. Provenienza e prompt asset in `docs/assets.md`.
+
+## Edizione floppy
+
+L'esportazione separata conserva sei casi, enigmi, garage, reparti, italiano/inglese,
+impostazioni e salvataggi locali. Converte gli atlanti PNG in WebP alla stessa
+risoluzione, scegliendo la qualità più alta tra i livelli configurati che rispetta
+il limite di **1.400.000 byte**, sia per lo ZIP sia per i file estratti con
+allocazione a blocchi di 512 byte. Le immagini della versione online restano invariate.
+
+```powershell
+npm ci
+python -m pip install -r requirements.txt
+npm run build:floppy
+```
+
+Output: `artifacts/floppy/AgentPippo-floppy.zip`, cartella `game/` e
+`manifest.json` con dimensioni, qualità WebP e SHA256 del pacchetto.
+Estrarre lo ZIP e aprire `index.html` in un browser moderno; non è un programma DOS.
+Il parlato usa le voci del dispositivo, alcune delle quali richiedono Internet.
+I salvataggi cloud richiedono il sito online e il backend Cloudflare.
+Su Windows si può verificare la versione compatta con `npm run test:browser`
+impostando `AGENT_PIPPO_DIST=artifacts/floppy/game`.

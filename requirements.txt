@@ -1,1 +1,2 @@
-# Nessuna dipendenza Python: applicazione statica HTML/CSS/JavaScript.
+# Optional floppy export tooling; the game itself requires no Python.
+cyclopts==5.2.0

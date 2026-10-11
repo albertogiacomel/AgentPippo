@@ -59,3 +59,16 @@ Verifica voci: nomi estesi dei personaggi normalizzati; priorità al genere prim
 Fix direzione camminata: Pippo si orienta a sinistra/destra in base alla posizione effettivamente renderizzata, anche durante inversioni rapide. Sprite specchiata tramite facing-left; limiti della scena e centro di destinazione calcolati sulla larghezza reale desktop/mobile. Animazione termina con transitionend o timer di sicurezza. Regressione browser copre due inversioni, arresto e bordi su entrambe le dimensioni.
 
 Ulteriore fix parlato: l’utente conferma interruzione al primo punto anche dopo l’accodamento delle frasi. La battuta completa ora è inviata in una singola SpeechSynthesisUtterance mantenuta per riferimento; nessuna separazione o coda per frase. Test verificano una sola richiesta contenente l’intero testo dei sei capitoli. Il precedente tentativo con coda di frasi non è sufficiente sul browser dell’utente.
+
+Edizione floppy 2026-10-11: `npm run build:floppy` usa la CLI Cyclopts
+`scripts/build_floppy.py` e l'encoder Sharp `scripts/floppy_assets.cjs`.
+Dipendenza Python opzionale in requirements.txt; originale online invariato.
+Atlanti WebP alla risoluzione originale, qualità selezionata 50: ZIP 1.303.795 byte,
+file estratti 1.382.242 byte, allocazione a blocchi di 512 byte e directory 1.391.104 byte.
+Output e SHA256 in artifacts/floppy/manifest.json; limite verificato 1.400.000 byte.
+Test browser dell'intera campagna compatta, traduzioni, impostazioni, salvataggi,
+camminata e layout desktop/mobile superato. Screenshot controllato visivamente.
+GitHub Actions genera lo ZIP scaricabile come artifact separato dalla pubblicazione
+Cloudflare. Browser moderno necessario; la voce usa il dispositivo e i salvataggi
+cloud richiedono il sito online. L'indice CBMM consultato è quello NAS /app/working,
+non un indice del repository Windows.

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "node scripts/build.cjs",
+    "build:floppy": "python scripts/build_floppy.py",
     "test": "node scripts/game_test.cjs && node scripts/localization_test.cjs && node scripts/speech_test.cjs && node scripts/backend_test.mjs",
     "test:cloud": "node scripts/cloud_runtime_test.cjs",
     "test:cloud:live": "node scripts/cloud_live_test.mjs",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "acorn": "8.19.0",
+    "sharp": "0.35.5",
     "wrangler": "4.149.0"
   },
   "allowScripts": {
