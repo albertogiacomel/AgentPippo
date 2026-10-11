@@ -18,11 +18,11 @@ assert.equal(speech.character('Ada la fornaia').pitch,1.06);
 assert.equal(speech.spokenText('Berto: «Sole → Luna!»'),'Sole , poi Luna!');
 assert.equal(speech.spokenText('Attenzione: la chiave è nel baule.'),'Attenzione: la chiave è nel baule.');
 speech.speak('Prima frase. Seconda frase!','it','Berto');
-assert.equal(spoken.length,2,'All sentences are queued without waiting for unreliable end events');assert.equal(spoken[0].lang,'it-IT');assert.equal(spoken[0].pitch,.92);
+assert.equal(spoken.length,1,'The complete dialogue is sent in one utterance');assert.equal(spoken[0].lang,'it-IT');assert.equal(spoken[0].pitch,.92);
 assert.equal(spoken.map(u=>u.text).join(' '),'Prima frase. Seconda frase!');
-speech.stop();spoken[1].onend();assert.equal(spoken.length,2);
-speech.speak('Nuovo dialogo.','en');assert.equal(spoken[2].lang,'en-GB');
+speech.stop();spoken[0].onend();assert.equal(spoken.length,1);
+speech.speak('Nuovo dialogo.','en');assert.equal(spoken[1].lang,'en-GB');
 const E=require('../dist/engine.js');
-for(const chapter of E.cases){const start=spoken.length,text=chapter.intro+' '+chapter.brief;speech.speak(text,'it');assert.equal(spoken.slice(start).map(u=>u.text).join(' '),speech.spokenText(text),'Complete chapter narration is queued');}
+for(const chapter of E.cases){const start=spoken.length,text=chapter.intro+' '+chapter.brief;speech.speak(text,'it');assert.equal(spoken.length-start,1);assert.equal(spoken[start].text,speech.spokenText(text),'Complete chapter narration stays in one utterance');}
 assert.ok(canceled>=3);
-console.log('Speech verified: Italian voice priority, sentence sequencing, cancellation and English fallback.');
+console.log('Speech verified: complete single-utterance dialogues, character voices, cancellation and English fallback.');

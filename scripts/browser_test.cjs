@@ -44,15 +44,15 @@ async function run(){
  const answer=async name=>{await roundTrip();await clickText('#puzzleOptions button',name);await catalog();};
  const screenshot=async name=>{await delay(700);const result=await command('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});fs.writeFileSync(path.join(artifacts,name),Buffer.from(result.data,'base64'));};
  async function verifyWalking(){
-  const settle=async()=>{for(let i=0;i<30;i++){if(!await evaluate("document.getElementById('pippo').classList.contains('walking')"))return;await delay(100);}throw new Error('Walking did not stop after arrival');};
+  const settle=async()=>{for(let i=0;i<30;i++){if(await evaluate("document.getElementById('pippo')?.classList.contains('walking')??null")===false)return;await delay(100);}throw new Error('Walking did not stop after arrival');};
   const move=x=>evaluate(`(()=>{const s=document.getElementById('scene'),r=s.getBoundingClientRect();s.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.left+r.width*${x}/100,clientY:r.bottom-8}));return getComputedStyle(document.getElementById('pippo')).transform;})()`);
   await move(85);await delay(200);
   assert.match(await move(5),/matrix\(-1,/,'Pippo faces left on a reversal during movement');
   await delay(100);assert.doesNotMatch(await move(98),/matrix\(-1,/,'Pippo turns right when moving right');
   await settle();
-  assert.equal(await evaluate("document.getElementById('pippo').classList.contains('walking')"),false,'Walking stops on arrival');
+  assert.equal(await evaluate("document.getElementById('pippo')?.classList.contains('walking')??null"),false,'Walking stops on arrival');
   await move(0);await settle();
-  const bounds=await evaluate("(()=>{const p=document.getElementById('pippo').getBoundingClientRect(),s=document.getElementById('scene').getBoundingClientRect();return {left:p.left>=s.left-3,right:p.right<=s.right+3};})()");
+  await ready();const bounds=await evaluate("(()=>{const p=document.getElementById('pippo').getBoundingClientRect(),s=document.getElementById('scene').getBoundingClientRect();return {left:p.left>=s.left-3,right:p.right<=s.right+3};})()");
   assert.deepEqual(bounds,{left:true,right:true},'Pippo remains inside the scene');
  }
  await command('Emulation.setDeviceMetricsOverride',{width:1280,height:1100,deviceScaleFactor:1,mobile:false});
@@ -98,7 +98,9 @@ async function run(){
  // Test the cloud controls independently of the real D1 runtime test.
  await evaluate(`(()=>{let saved=null,revision=0;window.confirm=()=>true;window.fetch=async(url,options)=>{if(options.method==='PUT'){const body=JSON.parse(options.body);if(body.revision!==revision)return new Response(JSON.stringify({error:'revision_conflict'}),{status:409});saved=body.state;revision++;return new Response(JSON.stringify({revision}));}return new Response(JSON.stringify({state:saved,revision}));};})()`);
  await click('#cloudButton');await click('#cloudCreate');await delay(150);assert.match(await evaluate("document.getElementById('cloudFeedback').textContent"),/creata|created/);assert.equal(await evaluate("JSON.parse(localStorage.getItem('agent_pippo_cloud')).revision"),1);
- await click('#cloudSave');await delay(150);assert.equal(await evaluate("JSON.parse(localStorage.getItem('agent_pippo_cloud')).revision"),2);await screenshot('v4_cloud.png');await click('#cloudLoad');await delay(500);assert.equal((await state()).completed.length,6);assert.ok(await evaluate("localStorage.getItem('porto_buffo_cloud_backup')"));
+ await click('#cloudSave');await delay(150);assert.equal(await evaluate("JSON.parse(localStorage.getItem('agent_pippo_cloud')).revision"),2);await screenshot('v4_cloud.png');await evaluate('window.pippoNavigationMarker=true');await click('#cloudLoad');
+ for(let i=0;i<150;i++){if(await evaluate("window.pippoNavigationMarker!==true&&document.readyState==='complete'&&Boolean(window.PippoGame)"))break;if(i===149)throw new Error('Cloud restore did not finish navigation');await delay(100);}
+ assert.equal((await state()).completed.length,6);assert.ok(await evaluate("localStorage.getItem('porto_buffo_cloud_backup')"));
  await delay(1000);for(let i=0;i<100;i++){if(await evaluate("document.readyState==='complete'&&Boolean(window.PippoGame)&&document.querySelectorAll('[data-id]').length>0"))break;await delay(100);}
  await command('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await click('#reset');await click('#confirmReset');await delay(1000);for(let i=0;i<100;i++){if(await evaluate("document.readyState==='complete'&&Boolean(window.PippoGame)&&document.querySelectorAll('[data-id]').length>0"))break;await delay(100);}await verifyWalking();await screenshot('v2_mobile.png');assert.equal(await evaluate('document.documentElement.scrollWidth<=window.innerWidth'),true);
  const dimensions=await evaluate("[...document.querySelectorAll('[data-id]')].map(e=>({id:e.dataset.id,w:e.getBoundingClientRect().width,h:e.getBoundingClientRect().height}))");assert.ok(dimensions.length>0&&dimensions.every(d=>d.w>=44&&d.h>=44),'Visible touch targets at least 44px');

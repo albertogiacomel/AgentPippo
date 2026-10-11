@@ -14,10 +14,11 @@
  function speak(text,language='it',speaker='Pippo'){
   if(!synth)return false;
   stop();const ticket=generation;
-  const chunks=spokenText(text).match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[];
-  // Queue every sentence immediately. Keep strong references until completion:
-  // some browser voices omit end events, which must not block later sentences.
-  pending=chunks.map(chunk=>new root.SpeechSynthesisUtterance(chunk.trim()));
+  const complete=spokenText(text);
+  if(!complete)return false;
+  // Submit the complete dialogue in one utterance. Sentence queues can stop
+  // after the first item with some browser voices. Retain it until completion.
+  pending=[new root.SpeechSynthesisUtterance(complete)];
   for(const utterance of pending){
    const voice=voiceFor(language,undefined,speaker);
    utterance.lang=language==='en'?'en-GB':'it-IT';if(voice)utterance.voice=voice;

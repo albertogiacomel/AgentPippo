@@ -32,3 +32,5 @@ Use case: illustration-story. Input image 1 is CHARACTER DESIGN REFERENCE ONLY, 
 ## Correzione lettura completa e personaggi
 
 Tutte le frasi vengono accodate immediatamente e gli oggetti vocali mantenuti in memoria fino alla fine: un evento onend assente non impedisce di inviare le frasi successive. I due punti nei messaggi restano leggibili; solo i prefissi Pippo/Berto/Ada vengono rimossi. Enigmi e indizi sono letti insieme, senza sovrascrivere il nuovo prompt con il solo feedback. La selezione vocale riconosce anche Ada la fornaia e Berto il guardiano e preferisce il genere del personaggio prima del timbro naturale. La Web Speech API non espone un genere standard: si riconoscono i nomi delle voci note; quelle sconosciute sono una riserva. Verifica Edge: Diego maschile ed Elsa femminile.
+
+Aggiornamento successivo: per l’interruzione al primo punto segnalata dall’utente, il metodo finale invia ciascuna battuta completa in una sola SpeechSynthesisUtterance. Il browser gestisce le pause della punteggiatura; non vengono più create code separate per frase. Test coprono l’intero testo in un’unica richiesta, non l’ascolto acustico sul dispositivo dell’utente.
