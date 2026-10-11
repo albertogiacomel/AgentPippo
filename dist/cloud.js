@@ -1,11 +1,12 @@
 'use strict';
 (function(){
+ const I=window.PippoI18n;
  const $=id=>document.getElementById(id),storageKey='agent_pippo_cloud';
- const button=document.createElement('button');button.id='cloudButton';button.textContent='Salvataggi';document.querySelector('.tools').append(button);
+ const button=document.createElement('button');button.id='cloudButton';button.textContent=I.t('Salvataggi');document.querySelector('.tools').append(button);
  const stylesheet=document.createElement('link');stylesheet.rel='stylesheet';stylesheet.href='cloud.css';document.head.append(stylesheet);
  let connection=null,busy=false;
  try{connection=JSON.parse(localStorage.getItem(storageKey));if(!/^[a-f0-9]{64}$/.test(connection?.code)||!Number.isSafeInteger(connection?.revision)||connection.revision<0)connection=null;}catch(error){console.warn('Impostazioni cloud non disponibili:',error.message);}
- function status(text){$('cloudFeedback').textContent=text;}
+ function status(text){$('cloudFeedback').textContent=I.t(text);}
  function store(){localStorage.setItem(storageKey,JSON.stringify(connection));}
  function refresh(){for(const id of ['cloudCreate','cloudSave','cloudLoad','cloudConnect'])$(id).disabled=busy;$('cloudSave').disabled=busy||!connection;$('cloudLoad').disabled=busy||!connection;$('cloudCode').value=connection?.code||'';}
  async function request(method,code,payload){
@@ -19,7 +20,7 @@
  $('closeCloud').onclick=()=>$('cloudDialog').close();
  $('cloudCreate').onclick=()=>action(async()=>{const bytes=crypto.getRandomValues(new Uint8Array(32)),code=Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');const result=await request('PUT',code,{state:snapshot(),revision:0});connection={code,revision:result.revision};store();status('Copia cloud creata! Conserva il codice per riprenderla su un altro dispositivo.');});
  $('cloudSave').onclick=()=>action(async()=>{const state=snapshot(),result=await request('PUT',connection.code,{state,revision:connection.revision});connection.revision=result.revision;store();status('Partita salvata nel cloud.');});
- $('cloudLoad').onclick=()=>{if(!window.confirm('Riprendere la copia cloud? La partita locale attuale verrà conservata come backup.'))return;action(async()=>replaceLocal(await request('GET',connection.code),connection.code));};
- $('cloudConnect').onclick=()=>{const code=$('cloudImport').value.trim().toLowerCase();if(!/^[a-f0-9]{64}$/.test(code)){status('Incolla il codice completo della partita.');return;}if(!window.confirm('Caricare la partita di questo codice? La partita locale attuale verrà conservata come backup.'))return;action(async()=>replaceLocal(await request('GET',code),code));};
+ $('cloudLoad').onclick=()=>{if(!window.confirm(I.t('Riprendere la copia cloud? La partita locale attuale verrà conservata come backup.')))return;action(async()=>replaceLocal(await request('GET',connection.code),connection.code));};
+ $('cloudConnect').onclick=()=>{const code=$('cloudImport').value.trim().toLowerCase();if(!/^[a-f0-9]{64}$/.test(code)){status('Incolla il codice completo della partita.');return;}if(!window.confirm(I.t('Caricare la partita di questo codice? La partita locale attuale verrà conservata come backup.')))return;action(async()=>replaceLocal(await request('GET',code),code));};
  $('cloudCode').onclick=()=>$('cloudCode').select();
 })();

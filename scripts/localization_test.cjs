@@ -1,0 +1,24 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const vm=require('node:vm');
+const values=new Map();
+const context=vm.createContext({console,localStorage:{getItem:key=>values.get(key)||null,setItem:(key,value)=>values.set(key,value)},NodeFilter:{SHOW_TEXT:4},document:{documentElement:{},title:'Agente Pippo',body:{},createTreeWalker:()=>({nextNode:()=>false}),querySelectorAll:()=>[]}});
+for(const file of ['engine.js','en.js','en_ui.js','i18n.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../dist',file),'utf8'),context,{filename:file});
+const E=context.PortoBuffo,I=context.PippoI18n;
+I.update({language:'en'});
+for(const chapter of E.cases){for(const key of ['title','type','brief','intro','goal','ending'])if(chapter[key])assert.notEqual(I.t(chapter[key]),chapter[key],key);for(const hint of chapter.hints)assert.notEqual(I.t(hint),hint);}
+for(const place of E.places)assert.notEqual(I.t(place),place);
+assert.equal(I.t('Risolvi prima 3 casi'),'Solve 3 cases first');
+assert.equal(I.t('Impostazioni'),'Settings');
+I.update({language:'it',sounds:false,difficulty:'easy'});
+assert.equal(I.t('Impostazioni'),'Impostazioni');
+assert.equal(JSON.parse(values.get('agent_pippo_settings')).difficulty,'easy');
+const s=E.initialState();s.hintLevel=1;
+assert.equal(E.hintFor(s,'challenge'),E.cases[0].hints[0]);
+assert.equal(E.hintFor(s,'easy'),E.cases[0].hints[2]);
+s.caseIndex=1;s.room=1;s.sequence=['sun'];
+assert.equal(E.answer(s,'melody','star','easy').ok,false);assert.equal(s.sequence.length,1);
+assert.equal(E.answer(s,'melody','star','normal').ok,false);assert.equal(s.sequence.length,0);
+console.log('PASS: English chapter/hint catalog, composed labels, persisted preferences and difficulty rules.');

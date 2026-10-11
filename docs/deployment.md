@@ -16,7 +16,9 @@ Documentazione: https://developers.cloudflare.com/pages/framework-guides/deploy-
 
 ## Salvataggi
 
-La partita è in `localStorage` con chiave `porto_buffo_v2`. Cambiando dominio o browser, la partita precedente non viene trasferita automaticamente. Il progetto non contiene le partite personali. Implementare esportazione/importazione è un possibile prossimo intervento. La migrazione v1/v2 conserva i progressi sullo stesso dominio.
+La partita è in `localStorage` con chiave `porto_buffo_v2`. Cambiando dominio o browser, la partita precedente non viene trasferita automaticamente: usare Salvataggi per creare la copia cloud e riprenderla con il codice sul nuovo dominio. Le preferenze lingua/suoni/difficoltà sono locali (`agent_pippo_settings`). La migrazione v1/v2 conserva i progressi sullo stesso dominio.
+
+Produzione attuale: https://agentpippo.giacomel.info. CNAME proxied verso `agent-pippo.pages.dev`, dominio associato a Pages e HTTPS verificato. GitHub Actions pubblica tramite Direct Upload dopo i test; non ricreare il progetto come integrazione Git nativa. Lo schema D1 resta gestito con migrazioni manuali.
 
 ## Ripristino
 

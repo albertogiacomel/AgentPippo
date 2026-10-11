@@ -1,6 +1,6 @@
 # Agente Pippo — Il segreto di Porto Buffo
 
-Avventura web originale in italiano per bambini dai 6 anni. Estetica di avventura cartoon classica, sei fondali illustrati, personaggio animato ispirato alla reference dell’utente, dialoghi comici e storia collegata del Barone Sottosopra. Nessun combattimento, timer, penalità o acquisto reale.
+Avventura web originale in italiano e inglese per bambini dai 6 anni. Estetica di avventura cartoon classica, sei fondali illustrati, personaggio animato ispirato alla reference dell’utente, dialoghi comici e storia collegata del Barone Sottosopra. Nessun combattimento, timer, penalità o acquisto reale.
 
 Repository: https://github.com/albertogiacomel/AgentPippo . **Per riprendere nei prossimi giorni leggere [docs/resume.md](docs/resume.md)**: stato, preferenze, mappa del codice, verifiche e limiti.
 
@@ -31,7 +31,9 @@ Backend Cloudflare gratuito preparato: **Salvataggi** permette copie cloud e rip
 
 ## Giocare
 
-Sito Cloudflare: https://agent-pippo.pages.dev . Copia Sites precedente: https://agente-pippo-porto-buffo.brownauk3.chatgpt.site (accesso privato del proprietario). In locale aprire `dist/index.html`: nessun build, installazione o server necessario per il gioco offline.
+Sito: https://agentpippo.giacomel.info (Cloudflare: https://agent-pippo.pages.dev). Presentazione in https://giacomel.info/#hobbies, sezione Experiments. Copia Sites precedente: https://agente-pippo-porto-buffo.brownauk3.chatgpt.site (accesso privato del proprietario). In locale aprire `dist/index.html`: nessun build, installazione o server necessario per il gioco offline.
+
+Il pulsante **EN / IT** cambia lingua senza perdere i progressi. **Impostazioni** contiene lingua, effetti sonori, lettura dei dialoghi e difficoltà: Guidata offre aiuti espliciti e conserva le note corrette; Normale usa suggerimenti progressivi; Sfida riduce gli indizi e offre solo il suggerimento iniziale. Le preferenze restano su questo dispositivo e sono separate dai salvataggi cloud. Su Windows la campagna inglese si verifica impostando `PIPPO_LANGUAGE=en` prima di `npm run test:browser`.
 
 - **Guarda**: osserva oggetti e registra gli indizi nel diario.
 - **Parla**: apre dialoghi con risposte selezionabili.
