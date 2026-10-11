@@ -2,6 +2,8 @@
 
 Avventura web originale in italiano e inglese per bambini dai 6 anni. Estetica di avventura cartoon classica, sei fondali illustrati, personaggio animato ispirato alla reference dell’utente, dialoghi comici e storia collegata del Barone Sottosopra. Nessun combattimento, timer, penalità o acquisto reale.
 
+Revisione grafica: fondali e personaggi rifiniti, sei veicoli e trenta oggetti illustrati, anteprime dei reparti. Lettura italiana con priorità alle voci naturali del dispositivo, tono per personaggio e pause tra frasi; il pulsante di ascolto funziona anche quando la lettura automatica è disattivata.
+
 Repository: https://github.com/albertogiacomel/AgentPippo . **Per riprendere nei prossimi giorni leggere [docs/resume.md](docs/resume.md)**: stato, preferenze, mappa del codice, verifiche e limiti.
 
 ## Avvio e hosting

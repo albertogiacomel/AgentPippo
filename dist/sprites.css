@@ -1,5 +1,8 @@
 .pippo-sprite{background-image:url('assets/pippo.png');background-size:400% 200%;background-position:0 100%}
-.char-1{background-size:341% 100%;background-position:29.36% 0}
+.char-1{background-size:300% 100%;background-position:0 0}
+.char-2{background-size:300% 100%;background-position:50% 0}
+.hotspot .char-2{clip-path:polygon(13% 0,100% 0,100% 100%,0 100%,0 66%,13% 66%)}
+.char-3{background-size:300% 100%;background-position:100% 0}
 #pippo{width:22%;height:44%;left:35%}
 #pippo.pose-talk{background-position:33.333% 100%}
 #pippo.pose-inspect{background-position:66.667% 100%}

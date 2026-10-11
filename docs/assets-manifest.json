@@ -1,0 +1,42 @@
+[
+  {
+    "file": "characters.png",
+    "bytes": 2257168,
+    "sha256": "098448ce372f44c5ee8ac1e56a0a82b45b7ddf687cfdd74f3116032eb114da41",
+    "width": 1536,
+    "height": 1024,
+    "alpha": true
+  },
+  {
+    "file": "pippo.png",
+    "bytes": 1034106,
+    "sha256": "26a0a2f198907d1a0ae01f99dea2f077ecd672b81d46d1664773201eb978b75c",
+    "width": 1774,
+    "height": 887,
+    "alpha": true
+  },
+  {
+    "file": "props.png",
+    "bytes": 2017820,
+    "sha256": "9bca59f77724819b6525bca58519882836561215e9f9e109b32b50e8fed90187",
+    "width": 1374,
+    "height": 1145,
+    "alpha": true
+  },
+  {
+    "file": "scenes.png",
+    "bytes": 3212477,
+    "sha256": "3b0431334af81b94f6d4f3219f3bb864d7474aa7b0c32d5c7e439556ca38b3f7",
+    "width": 2172,
+    "height": 724,
+    "alpha": false
+  },
+  {
+    "file": "vehicles.png",
+    "bytes": 1692181,
+    "sha256": "2c50c61149cbe72ce7d098ccce859ffb30ac5ee4c86e1e992f33873fd3e4bc5e",
+    "width": 1983,
+    "height": 793,
+    "alpha": true
+  }
+]

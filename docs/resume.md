@@ -1,5 +1,7 @@
 # Ripresa sviluppo — AgentePippo
 
+Aggiornamento grafica/audio 2026-10-11: sei fondali ridisegnati, atlas Pippo rifinito, tre personaggi secondari in celle separate. `dist/art.js` visualizza i nuovi atlas illustrati di trenta oggetti e sei veicoli in contenitori SVG; anteprime illustrate nei reparti. `dist/speech.js` sceglie voci italiane naturali quando disponibili, preferenza maschile per Pippo/Berto e femminile per Ada, ritmo e tono moderati, lettura frase per frase e cancellazione delle battute precedenti. Nessun servizio vocale a pagamento: timbro e disponibilità dipendono dal browser/dispositivo. Test specifico `scripts/speech_test.cjs`; nessuna modifica al formato dei salvataggi o alle soluzioni degli enigmi.
+
 Stato salvato: 2026-10-11. Repository: https://github.com/albertogiacomel/AgentPippo . Cartella locale: `source/AgentPippo` nella home utente. Questo documento è il punto di ingresso per le prossime sessioni.
 
 Stato corrente: produzione https://agentpippo.giacomel.info, dominio Cloudflare attivo con HTTPS. Aggiunto solo il CNAME del nuovo sottodominio; nessuna modifica ad apex o www. Pubblicazione automatica tramite GitHub Actions su main. Il repository `albertogiacomel/website`, cartella `source/website`, presenta il gioco in Experiments (`contents/hobbies.ts`, italiano/inglese) con immagine locale e link demo/GitHub.

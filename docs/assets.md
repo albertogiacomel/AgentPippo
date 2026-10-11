@@ -3,11 +3,19 @@
 Generazione con tool integrato imagegen; nessun fallback CLI/API. Reference di Pippo: immagine caricata dall'utente il 2026-10-10. Asset finali copiati nel progetto, non dipendono dai percorsi Codex.
 
 - `dist/assets/scenes.png`: atlas 3 colonne × 2 righe, sei fondali.
-- `dist/assets/characters.png`: quattro personaggi su alpha trasparente; Berto, Ada e Barone usati nel gioco.
+- `dist/assets/characters.png`: tre celle uguali su alpha trasparente: Berto, Ada e Barone, nell'ordine. CSS 300% e posizioni 0/50/100%; il vecchio messaggero inutilizzato è stato rimosso.
 - `dist/assets/pippo.png`: atlas 4 colonne × 2 righe; quattro frame camminata, idle, dialogo, ispezione, indicazione. Fondo trasparente.
-- Gli atlas sono visualizzati tramite background-position CSS; nessuna modifica raster manuale. I piccoli oggetti dell'inventario sono SVG nativi del gioco.
+- Fondali e personaggi usano background-position CSS; oggetti e veicoli usano celle raster in contenitori SVG. Nessuna modifica raster manuale.
 
-## Prompt finali
+## Revisione qualità 2026-10-11
+
+Dimensioni, byte e SHA256 dei cinque atlas sono registrati in `assets-manifest.json`. Gli oggetti mantengono l'ordine di `propArt` in `game.js`: griglia 6×5, incluso il set delle sei bottiglie nell'ultima riga. I mezzi mantengono l'ordine bicicletta, moto, auto, sportiva, camion, elicottero. Nessuna modifica manuale dei pixel; ritagli e piccolo mascheramento della cella di Ada sono definiti nel rendering SVG/CSS.
+
+Fondali rigenerati come atlas 3:1, con suolo libero, illuminazione cinematografica e maggior dettaglio pittorico. Pippo rifinito usando il precedente atlas come riferimento, conservando le otto pose e l'identità. Personaggi secondari rigenerati in tre celle con margini trasparenti per prevenire il ritaglio dei personaggi vicini. Gli atlas provengono dal tool integrato imagegen e sono copiati nel progetto. `vehicles.png` contiene sei mezzi in griglia 3×2; `props.png` contiene trenta oggetti in griglia 6×5. `art.js` seleziona la cella in un contenitore SVG senza modificare i pixel. Luci e rotore restano overlay animati nativi. I reparti hanno anteprime ricavate dai fondali.
+
+Il parlato usa `speech.js`: selezione per lingua e qualità delle voci disponibili, tono per personaggio, frasi sequenziali e stop completo. La sintesi non garantisce lo stesso timbro su ogni dispositivo. Test automatizzati verificano selezione, pulizia dei simboli, sequenza e cancellazione; l'ascolto soggettivo resta una verifica sul dispositivo dell'utente.
+
+## Prompt della prima versione (riferimento storico)
 
 ### Fondali
 
@@ -20,4 +28,3 @@ Use case: illustration-story. Production character atlas for a lighthearted chil
 ### Sprite Pippo
 
 Use case: illustration-story. Input image 1 is CHARACTER DESIGN REFERENCE ONLY, not an atlas to preserve or directly edit. Asset type: production sprite atlas for a browser point-and-click adventure for a 6 year old. Create ONE sprite sheet of the SAME character inspired closely by the provided reference: cheerful youthful male police detective, brown swept hair, navy blue jacket, green shirt and tie, gold round badge on left chest, gray trousers, black shoes, large friendly expressive eyes and cartoon proportions. Exactly 4 columns and 2 rows of EIGHT equal rectangular cells, no borders, no gutters, every full-body character centered within its cell, feet on exact same baseline, generous transparent margins, consistent scale. Top row left to right: walking to right frame1, walking to right frame2, walking to right frame3, walking to right frame4. He wears a navy police peaked cap in walking frames. Bottom row left to right: idle three quarter front standing smiling cap on; speaking three quarter front with one hand gesturing; inspecting holding a magnifying glass; pointing right with arm. Clean hand-drawn 2D cel shaded cartoon like the supplied image, detailed readable silhouettes, no scenery, no words, no extra items outside characters, no duplicate cells beyond requested 8 poses. Real transparent alpha background. Entire sheet landscape 2:1 approximately.
-

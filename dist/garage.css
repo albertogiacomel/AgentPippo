@@ -1,5 +1,7 @@
 .vehicle-art{height:100px;padding:0 10px;margin-bottom:12px}
 .vehicle-art svg{display:block;margin:auto;max-width:190px;height:100%}
+.station-art{height:100px;margin-bottom:12px;border-radius:8px;border:1px solid #b58b5370;background-image:url('assets/scenes.png');background-size:300% 200%;box-shadow:inset 0 -20px 25px #10152850}
+.station-art-0{background-position:0 0}.station-art-1{background-position:50% 0}.station-art-2{background-position:100% 0}.station-art-3{background-position:0 100%}.station-art-4{background-position:50% 100%}.station-art-5{background-position:100% 100%}
 .parked-vehicle{position:absolute;z-index:5;left:5%;bottom:10%;width:15%;height:19%;border:0;background:none!important;padding:0;min-width:70px;filter:drop-shadow(3px 5px 3px #0007)}
 .parked-vehicle svg{width:100%;height:100%}
 .parked-vehicle span{position:absolute;top:-14px;left:0;right:0;font-size:11px;color:#ffe3a8;text-shadow:0 2px 4px #000}
