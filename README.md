@@ -29,7 +29,7 @@ Backend Cloudflare gratuito preparato: **Salvataggi** permette copie cloud e rip
 
 ## Giocare
 
-Sito: https://agente-pippo-porto-buffo.brownauk3.chatgpt.site (accesso privato del proprietario). In locale aprire `dist/index.html`: nessun build, installazione o server necessario.
+Sito Cloudflare: https://agent-pippo.pages.dev . Copia Sites precedente: https://agente-pippo-porto-buffo.brownauk3.chatgpt.site (accesso privato del proprietario). In locale aprire `dist/index.html`: nessun build, installazione o server necessario per il gioco offline.
 
 - **Guarda**: osserva oggetti e registra gli indizi nel diario.
 - **Parla**: apre dialoghi con risposte selezionabili.

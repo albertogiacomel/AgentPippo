@@ -14,6 +14,8 @@ Fonti: https://developers.cloudflare.com/workers/platform/pricing/ e https://dev
 
 ## Attivazione nell’account scelto
 
+Configurazione AgentePippo del 2026-10-11: account `291702df5c8eef8684918f4f92ca4c4d`; progetto Pages `agent-pippo`; database D1 `agent-pippo`, UUID `82f87023-a583-4e66-ac43-fdde44b1a07e`. Binding di produzione in `wrangler.toml`, schema remoto applicato. Le anteprime non hanno accesso al DB di produzione. URL: https://agent-pippo.pages.dev . Verificare la pubblicazione con le API e i test prima di dichiararla operativa.
+
 1. Autenticare Wrangler con `npx wrangler login`, oppure usare credenziali già gestite nel relativo ambiente senza copiarle nel repository.
 2. Verificare account e piano Free. Creare D1 `agent-pippo` dalla dashboard oppure `npx wrangler d1 create agent-pippo`.
 3. Aggiungere a `wrangler.toml` il binding restituito da Cloudflare, con **UUID reale**:
@@ -54,10 +56,10 @@ npm run dev:cloud
 
 La procedura NAS è `/app/working/wiki/rules/cf_auth_setup.md`, modulo `/app/working/scripts/cf_auth.py`. Le verifiche di autenticazione vanno eseguite sul NAS usando `iter_auth_headers()`: il bridge remoto maschera i segreti in uscita. Non recuperare segreti stampandoli e non salvarli in artefatti.
 
-Credenziali sul NAS verificate valide, account configurato diverso da quello indicato nel link dell’utente. L’account richiesto ha risposto 403. Non è stato creato alcun database remoto o pubblicato alcun sito Cloudflare durante questa verifica; serve risolvere la scelta/accesso dell’account.
+Il 2026-10-10 le credenziali NAS erano valide ma non autorizzate all’account richiesto (403). Il 2026-10-11 l’utente ha fornito un token dell’account richiesto: verifica attiva e accesso Pages/D1 confermati; creati progetto e database dedicati. Nessuna credenziale è salvata nel repository o negli artefatti. Il sito giacomel.info e le risorse R2 non sono stati modificati. Le verifiche delle sottoscrizioni non hanno mostrato Workers Paid; nessun upgrade richiesto.
 
 ## Limiti e rollback
 
-Backend di salvataggio personale, senza gestione centralizzata di utenti, revoca del codice o prevenzione di stati costruiti manualmente ma formalmente validi. Le API hanno limiti di body, validazione, query parametrizzate, nessun CORS e risposte non memorizzabili. Per un futuro rilascio pubblico con molti giocatori aggiungere rate limiting sull’endpoint e gestione degli accessi. Non ci sono scritture remote in questa fase.
+Backend di salvataggio personale, senza gestione centralizzata di utenti, revoca del codice o prevenzione di stati costruiti manualmente ma formalmente validi. Le API hanno limiti di body, validazione, query parametrizzate, nessun CORS e risposte non memorizzabili. Per un futuro rilascio pubblico con molti giocatori aggiungere rate limiting sull’endpoint e gestione degli accessi.
 
 Rollback: ripubblicare il commit precedente, mantenendo D1 e lo storage locale. La prima migrazione è additiva e idempotente. Prima di future migrazioni dei dati effettuare backup D1.
