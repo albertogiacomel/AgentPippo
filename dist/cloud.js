@@ -2,11 +2,11 @@
 (function(){
  const I=window.PippoI18n;
  const $=id=>document.getElementById(id),storageKey='agent_pippo_cloud';
- const button=document.createElement('button');button.id='cloudButton';button.textContent=I.t('Salvataggi');document.querySelector('.tools').append(button);
+ const button=document.createElement('button');button.id='cloudButton';I.text(button,'Salvataggi');document.querySelector('.tools').append(button);
  const stylesheet=document.createElement('link');stylesheet.rel='stylesheet';stylesheet.href='cloud.css';document.head.append(stylesheet);
  let connection=null,busy=false;
  try{connection=JSON.parse(localStorage.getItem(storageKey));if(!/^[a-f0-9]{64}$/.test(connection?.code)||!Number.isSafeInteger(connection?.revision)||connection.revision<0)connection=null;}catch(error){console.warn('Impostazioni cloud non disponibili:',error.message);}
- function status(text){$('cloudFeedback').textContent=I.t(text);}
+ function status(text){I.text($('cloudFeedback'),text);}
  function store(){localStorage.setItem(storageKey,JSON.stringify(connection));}
  function refresh(){for(const id of ['cloudCreate','cloudSave','cloudLoad','cloudConnect'])$(id).disabled=busy;$('cloudSave').disabled=busy||!connection;$('cloudLoad').disabled=busy||!connection;$('cloudCode').value=connection?.code||'';}
  async function request(method,code,payload){
