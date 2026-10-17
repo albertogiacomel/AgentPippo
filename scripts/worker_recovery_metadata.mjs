@@ -28,13 +28,18 @@ let url;
 if (phase === 'before') {
   const subdomain = await api('/workers/subdomain');
   const settings = await api('/workers/scripts/' + worker + '/subdomain');
-  if (settings.enabled) url = 'https://' + worker + '.' + subdomain.subdomain + '.workers.dev/';
-  else {
-    const domains = await api('/workers/domains');
-    const domain = domains.find(item => item.service === worker);
-    assert.ok(domain?.hostname, 'No public Worker URL found');
-    url = 'https://' + domain.hostname + '/';
+  const domains = await api('/workers/domains');
+  const candidates = domains.filter(item => item.service === worker).map(item => 'https://' + item.hostname + '/');
+  if (settings.enabled) candidates.push('https://' + worker + '.' + subdomain.subdomain + '.workers.dev/');
+  assert.ok(candidates.length, 'No public Worker URL found');
+  const probes = [];
+  for (const candidate of candidates) {
+    const response = await fetch(candidate, { signal: AbortSignal.timeout(30000) });
+    await response.arrayBuffer(); probes.push({ url: candidate, status: response.status });
+    if (response.ok) { url = candidate; break; }
   }
+  console.log('Public URL probes: ' + JSON.stringify(probes));
+  assert.ok(url, 'No public Worker URL responds successfully: ' + JSON.stringify(probes));
 } else url = JSON.parse(await readFile(join(folder, 'before.json'), 'utf8')).url;
 // Same serial HTTP workload before and after, in the same runner. Not FPS or UI latency.
 const samples = [], statuses = [];
