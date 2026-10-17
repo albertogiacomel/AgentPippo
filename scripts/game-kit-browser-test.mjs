@@ -17,12 +17,18 @@ try{
  await delay(50);assert.notEqual(await nativeText(),before,'Native game reacts to settings');
  await evaluate('document.querySelector("[data-kit-settings]").click()');await wait('window.__gameKit.dialog.element.open');
  assert.equal(await evaluate('window.__gameKit.dialog.element.querySelector("h2").textContent'),'Settings');
+ assert.ok(await evaluate('window.__gameKit.dialog.element.querySelectorAll("fieldset").length')>=2);
+ assert.equal(await evaluate('window.__gameKit.settingsButton.getAttribute("aria-expanded")'),'true');
  const select=key=>`window.__gameKit.dialog.element.querySelector('[data-setting=${key}]')`;
  await evaluate(`(()=>{const e=${select('language')};e.value='it';e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
  assert.equal(await evaluate('window.__gameKit.settings.getSnapshot().language'),'it');
  const press=async(key,code,vk)=>{await command('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode:vk});await command('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode:vk});};
  await press('Escape','Escape',27);await wait('!window.__gameKit.dialog.element.open');
  await wait('document.activeElement.hasAttribute("data-kit-settings")');
+ await evaluate('window.__gameKit.lifecycle.pause("test-manual");window.__gameKit.open()');
+ await press('Escape','Escape',27);await wait('!window.__gameKit.dialog.element.open');
+ assert.equal(await evaluate('window.__gameKit.lifecycle.paused'),true,'Dialog close preserves another pause reason');
+ await evaluate('window.__gameKit.lifecycle.resume("test-manual")');
  await evaluate('window.__navigationPending=true');await command('Page.reload',{ignoreCache:true});
  await wait('!window.__navigationPending&&Boolean(window.__gameKit)');
  assert.equal(await evaluate('window.__gameKit.settings.getSnapshot().language'),'it');

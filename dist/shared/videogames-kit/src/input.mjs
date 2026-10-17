@@ -60,6 +60,7 @@ export class InputManager {
     };
     this.#off.push(unbind); return unbind;
   }
+  get enabled() { return this.#enabled; }
   setEnabled(enabled) { this.#enabled = Boolean(enabled); if (!enabled) this.clear(); }
   clear() {
     for (const sources of this.#sources.values()) sources.clear();

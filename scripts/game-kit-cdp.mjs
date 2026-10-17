@@ -47,11 +47,11 @@ export async function openBrowser(root, { entry = '/examples/index.html', artifa
   });
   try {
     let page;
-    for (let attempt = 0; attempt < 100; attempt++) {
+    for (let attempt = 0; attempt < 300; attempt++) {
       if (spawnError) throw spawnError;
       if (browser.exitCode !== null && browser.exitCode !== 0) throw new Error('Browser exited before CDP was ready: ' + browser.exitCode + ' ' + diagnostics);
       try { page = (await (await fetch('http://127.0.0.1:' + debug + '/json')).json()).find(p => blockRemoteAI ? p.url === 'about:blank' : p.url.startsWith(url)); }
-      catch (error) { if (attempt === 99) throw new Error('Browser CDP unavailable', { cause: error }); }
+      catch (error) { if (attempt === 299) throw new Error('Browser CDP unavailable: ' + diagnostics.slice(-4000), { cause: error }); }
       if (page) break; await delay(100);
     }
     if (!page) throw new Error('Browser page was not created');

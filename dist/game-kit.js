@@ -141,7 +141,7 @@ class I18n {
   }
 }
 const UI_MESSAGES = Object.freeze({
-  it: { settings: 'Impostazioni', close: 'Chiudi', language: 'Lingua', theme: 'Aspetto',
+  it: { settingsHint: 'Le modifiche si applicano subito. I progressi della partita restano conservati.', displayGroup: 'Lingua e aspetto', audioGroup: 'Audio', playGroup: 'Partita', accessibilityGroup: 'Accessibilità', done: 'Fatto', cancel: 'Annulla', confirmReset: 'Ripristina', settingsError: 'Modifica non riuscita. Riprova.', exitFullscreen: 'Esci da schermo intero', settings: 'Impostazioni', close: 'Chiudi', language: 'Lingua', theme: 'Aspetto',
     system: 'Sistema', light: 'Chiaro', dark: 'Scuro', motion: 'Animazioni', reduced: 'Ridotte',
     contrast: 'Contrasto', normal: 'Normale', high: 'Aumentato', muted: 'Disattiva tutto l’audio',
     effects: 'Effetti sonori', music: 'Musica', voice: 'Voce', difficulty: 'Difficoltà',
@@ -151,7 +151,7 @@ const UI_MESSAGES = Object.freeze({
     memory: 'Salvataggio non disponibile: preferenze mantenute per questa sessione.',
     future: 'Preferenze di una versione più recente: aggiornamento necessario.',
     invalid: 'Preferenze non valide: applicati i valori iniziali.', easy: 'Guidata', challenge: 'Sfida' },
-  en: { settings: 'Settings', close: 'Close', language: 'Language', theme: 'Appearance',
+  en: { settingsHint: 'Changes apply immediately. Your game progress is preserved.', displayGroup: 'Language and appearance', audioGroup: 'Audio', playGroup: 'Game', accessibilityGroup: 'Accessibility', done: 'Done', cancel: 'Cancel', confirmReset: 'Reset', settingsError: 'Could not apply the change. Try again.', exitFullscreen: 'Exit fullscreen', settings: 'Settings', close: 'Close', language: 'Language', theme: 'Appearance',
     system: 'System', light: 'Light', dark: 'Dark', motion: 'Motion', reduced: 'Reduced',
     contrast: 'Contrast', normal: 'Normal', high: 'High', muted: 'Mute all audio',
     effects: 'Sound effects', music: 'Music', voice: 'Voice', difficulty: 'Difficulty',
@@ -225,6 +225,7 @@ class InputManager {
     };
     this.#off.push(unbind); return unbind;
   }
+  get enabled() { return this.#enabled; }
   setEnabled(enabled) { this.#enabled = Boolean(enabled); if (!enabled) this.clear(); }
   clear() {
     for (const sources of this.#sources.values()) sources.clear();
@@ -440,149 +441,172 @@ class AppearanceController {
 }
 
 let nextDialog = 0;
-/** Native modal with live language switching and settings-only reset. */
+/** Accessible, capability-aware settings; every change is immediate. */
 class SettingsDialog {
-  #root; #settings; #i18n; #dialog; #fields = []; #labels = []; #off; #opener;
-  #close; #reset; #status; #onError; #confirm; #disposed = false;
-  constructor(root, settings, { i18n = new I18n(UI_MESSAGES), channels = ['effects','music','voice'],
-    difficulties = [{ value: 'normal', label: 'normal' }], languages = [{ value: 'it', text: 'Italiano' }, { value: 'en', text: 'English' }],
-    confirmReset = message => globalThis.confirm(message), onError = error => console.warn('Settings:', error) } = {}) {
-    if (channels.some(c => !['effects','music','voice'].includes(c))) throw new TypeError('Unknown audio channel');
-    this.#root = root; this.#settings = settings; this.#i18n = i18n; this.#confirm = confirmReset; this.#onError = onError;
-    const document = root.ownerDocument, id = `ag-settings-${++nextDialog}`;
-    const node = (tag, className) => { const e = document.createElement(tag); if (className) e.className = className; return e; };
-    const text = (element, key) => { this.#labels.push({ element, key }); return element; };
-    this.#dialog = node('dialog', 'ag-dialog'); this.#dialog.setAttribute('aria-labelledby', id);
-    const title = text(node('h2', 'ag-title'), 'settings'); title.id = id;
-    this.#close = text(node('button', 'ag-button'), 'close'); this.#close.type = 'button'; this.#close.onclick = () => this.close();
-    const header = node('header', 'ag-topbar'); header.append(title, this.#close); this.#dialog.append(header);
-    const add = (key, options) => {
-      const label = node('label', 'ag-field'), caption = text(node('span'), key), control = node(options ? 'select' : 'input');
-      control.name = key; control.dataset.setting = key;
-      if (options) for (const option of options) {
-        const item = node('option'); item.value = option.value;
-        if (option.text) item.textContent = option.text; else text(item, option.label);
-        control.append(item);
-      } else control.type = 'checkbox';
-      control.onchange = () => {
-        try { settings.update({ [key]: options ? control.value : control.checked }); this.#render(); }
-        catch (error) { this.#onError(error); this.#render(); }
-      };
-      label.append(caption, control); this.#fields.push({ key, control, options }); this.#dialog.append(label);
+  #root;#settings;#i18n;#dialog;#fields=[];#labels=[];#off;#opener;
+  #close;#reset;#status;#onError;#confirm;#confirmation;#disposed=false;
+  constructor(root,settings,{i18n=new I18n(UI_MESSAGES),channels=['effects','music','voice'],
+    difficulties=[{value:'normal',label:'normal'}],languages=[{value:'it',text:'Italiano'},{value:'en',text:'English'}],
+    confirmReset,onError=error=>console.warn('Settings:',error)}={}){
+    if(channels.some(c=>!['effects','music','voice'].includes(c)))throw new TypeError('Unknown audio channel');
+    this.#root=root;this.#settings=settings;this.#i18n=i18n;this.#confirm=confirmReset;this.#onError=onError;
+    const document=root.ownerDocument,id=`ag-settings-${++nextDialog}`;
+    const node=(tag,className)=>{const e=document.createElement(tag);if(className)e.className=className;return e;};
+    const text=(element,key)=>{this.#labels.push({element,key});return element;};
+    const button=(key,className,action)=>{const e=text(node('button',className),key);e.type='button';e.onclick=action;return e;};
+    this.#dialog=node('dialog','ag-dialog');this.#dialog.setAttribute('aria-labelledby',id);this.#dialog.setAttribute('aria-describedby',id+'-hint');
+    const title=text(node('h2','ag-title'),'settings');title.id=id;
+    this.#close=button('close','ag-button ag-button--quiet',()=>this.close());
+    const header=node('header','ag-topbar ag-dialog-header');header.append(title,this.#close);
+    const hint=text(node('p','ag-status'),'settingsHint');hint.id=id+'-hint';
+    this.#dialog.append(header,hint);
+    const section=key=>{const e=node('fieldset','ag-settings-group');e.append(text(node('legend'),key));this.#dialog.append(e);return e;};
+    const add=(group,key,options)=>{
+      const label=node('label','ag-field'),caption=text(node('span'),key),control=node(options?'select':'input');
+      control.name=key;control.dataset.setting=key;
+      if(options)for(const option of options){const e=node('option');e.value=option.value;if(option.text)e.textContent=option.text;else text(e,option.label);control.append(e);}
+      else control.type='checkbox';
+      control.onchange=()=>{try{settings.update({[key]:options?control.value:control.checked});this.#render();}catch(error){this.#onError(error);this.#render();this.#status.textContent=this.#i18n.t('settingsError');}};
+      label.append(caption,control);this.#fields.push({key,control,options});group.append(label);
     };
-    const options = values => values.map(value => ({ value, label: value }));
-    add('language', languages); add('theme', options(['system','light','dark']));
-    add('motion', options(['system','reduced'])); add('contrast', options(['normal','high']));
-    if (channels.length) add('muted');
-    for (const channel of channels) add(channel);
-    if (difficulties.length) add('difficulty', difficulties);
-    this.#reset = text(node('button', 'ag-button ag-button--quiet'), 'reset'); this.#reset.type = 'button';
-    this.#reset.onclick = () => {
-      if (this.#confirm(this.#i18n.t('resetAsk'))) {
-        try { settings.reset(); this.#render(); } catch (error) { this.#onError(error); }
-      }
-    };
-    this.#status = node('p', 'ag-status'); this.#status.setAttribute('role', 'status');
-    this.#dialog.append(this.#reset, this.#status);
-    this.#dialog.addEventListener('keydown', event => {
-      if (event.key !== 'Tab') return;
-      const controls = [...this.#dialog.querySelectorAll('button:not(:disabled),select:not(:disabled),input:not(:disabled)')];
-      const first = controls[0], last = controls.at(-1), active = document.activeElement;
-      if (event.shiftKey && active === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && active === last) { event.preventDefault(); first.focus(); }
+    const options=values=>values.map(value=>({value,label:value}));
+    const display=section('displayGroup');add(display,'language',languages);add(display,'theme',options(['system','light','dark']));
+    if(channels.length){const audio=section('audioGroup');add(audio,'muted');for(const channel of channels)add(audio,channel);}
+    if(difficulties.length>1)add(section('playGroup'),'difficulty',difficulties);
+    const accessibility=section('accessibilityGroup');add(accessibility,'motion',options(['system','reduced']));add(accessibility,'contrast',options(['normal','high']));
+    const footer=node('footer','ag-dialog-footer');
+    this.#reset=button('reset','ag-button ag-button--quiet',()=>{
+      if(this.#confirm){if(this.#confirm(this.#i18n.t('resetAsk')))reset();}
+      else{this.#confirmation.hidden=false;cancel.focus();}
     });
-    this.#dialog.addEventListener('close', () => { if (this.#opener?.isConnected) this.#opener.focus(); });
-    root.append(this.#dialog); this.#off = settings.subscribe(this.#render); this.#render();
+    const reset=()=>{try{settings.reset();this.#render();this.#confirmation.hidden=true;this.#reset.focus();}catch(error){this.#onError(error);this.#status.textContent=this.#i18n.t('settingsError');}};
+    this.#confirmation=node('div','ag-reset-confirm');this.#confirmation.hidden=true;this.#confirmation.setAttribute('role','group');
+    const question=text(node('p'),'resetAsk');question.id=id+'-reset';this.#confirmation.setAttribute('aria-labelledby',question.id);
+    const cancel=button('cancel','ag-button',()=>{this.#confirmation.hidden=true;this.#reset.focus();});
+    const confirm=button('confirmReset','ag-button ag-button--danger',reset);
+    this.#confirmation.append(question,cancel,confirm);
+    this.#status=node('p','ag-status');this.#status.setAttribute('role','status');this.#status.setAttribute('aria-live','polite');this.#status.setAttribute('aria-atomic','true');
+    footer.append(this.#reset,button('done','ag-button ag-button--primary',()=>this.close()));
+    this.#dialog.append(this.#confirmation,this.#status,footer);
+    this.#dialog.addEventListener('keydown',event=>{
+      if(event.key==='Escape'&&!this.#confirmation.hidden){event.preventDefault();this.#confirmation.hidden=true;this.#reset.focus();return;}
+      if(event.key!=='Tab')return;
+      const controls=[...this.#dialog.querySelectorAll('button:not(:disabled),select:not(:disabled),input:not(:disabled)')].filter(e=>!e.closest('[hidden]'));
+      const first=controls[0],last=controls.at(-1),active=document.activeElement;
+      if(event.shiftKey&&active===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&active===last){event.preventDefault();first.focus();}
+    });
+    this.#dialog.addEventListener('close',()=>{this.#confirmation.hidden=true;if(this.#opener?.isConnected)this.#opener.focus();});
+    root.append(this.#dialog);this.#off=settings.subscribe(this.#render);this.#render();
   }
-  #render = () => {
-    const value = this.#settings.getSnapshot(); this.#i18n.setLanguage(value.language); this.#dialog.lang = value.language;
-    for (const { element, key } of this.#labels) element.textContent = this.#i18n.t(key);
-    for (const { key, control, options } of this.#fields) {
-      if (options) control.value = value[key]; else control.checked = value[key];
+  #render=()=>{
+    const value=this.#settings.getSnapshot();this.#i18n.setLanguage(value.language);this.#dialog.lang=value.language;
+    for(const {element,key}of this.#labels)element.textContent=this.#i18n.t(key);
+    const status=this.#settings.status;
+    for(const {key,control,options}of this.#fields){
+      if(options)control.value=value[key];else control.checked=value[key];
+      control.disabled=status==='future'||(['effects','music','voice'].includes(key)&&value.muted);
     }
-    const status = this.#settings.status;
-    this.#status.textContent = this.#i18n.t(['empty','memory','future','invalid'].includes(status) ? status : 'saved');
-    for (const field of this.#fields) field.control.disabled = status === 'future';
-    this.#reset.disabled = status === 'future';
+    const message=['empty','memory','future','invalid'].includes(status)?status:'saved';
+    this.#status.dataset.storage=message;const next=this.#i18n.t(message);if(this.#status.textContent!==next)this.#status.textContent=next;
+    this.#reset.disabled=status==='future';
   };
-  get element() { return this.#dialog; }
-  open(opener = this.#root.ownerDocument.activeElement) {
-    if (this.#disposed) throw new Error('Settings dialog disposed');
-    if (this.#dialog.open) return;
-    this.#opener = opener; this.#render(); this.#dialog.showModal(); this.#close.focus();
+  get element(){return this.#dialog;}
+  open(opener=this.#root.ownerDocument.activeElement){
+    if(this.#disposed)throw new Error('Settings dialog disposed');if(this.#dialog.open)return;
+    this.#opener=opener;this.#confirmation.hidden=true;this.#render();this.#dialog.showModal();this.#close.focus();
   }
-  close() { if (this.#dialog.open) this.#dialog.close(); }
-  dispose() { this.close(); this.#off(); this.#dialog.remove(); this.#disposed = true; }
+  close(){if(this.#dialog.open)this.#dialog.close();}
+  dispose(){if(this.#disposed)return;this.close();this.#off();this.#dialog.remove();this.#disposed=true;}
 }
 
+// Consumer-specific defaults and migrations are separate from the generic core.
+const field=(from,to)=>({from,to});
+const theme=()=>({key:'theme',encoding:'text',fields:[field('','theme')]});
+const BUILTIN_PROFILES=[
+  {gameId:'agent-pippo',difficulties:['easy','normal','challenge'],difficulty:'normal',channels:['effects','voice'],defaults:{theme:'dark'},messages:{it:{voice:'Lettura automatica'},en:{voice:'Read dialogues aloud'}},legacy:[
+    {key:'agent_pippo_settings',fields:[field('language','language'),field('sounds','effects'),field('difficulty','difficulty')]},
+    {key:'porto_buffo_v2',fields:[field('voice','voice')]}]},
+  {gameId:'battleship',difficulties:['easy','medium','hard'],difficulty:'medium',channels:['effects'],legacy:[theme()]},
+  {gameId:'f1-paper-circuit',difficulties:['normal'],difficulty:'normal',channels:[],defaults:{theme:'light'}},
+  {gameId:'hangman',difficulties:['easy','medium','hard'],difficulty:'easy',channels:['effects','voice'],defaults:{theme:'light'},legacy:[theme(),
+    {key:'appLanguage',encoding:'text',fields:[field('','language')]},
+    {key:'sfxEnabled',fields:[field('','effects')]},
+    {key:'italianHangmanState',fields:[field('currentDifficulty','difficulty')]}]},
+  {gameId:'ruota-del-tempo',difficulties:['easy','medium'],difficulty:'easy',channels:['effects','voice'],defaults:{theme:'light'}},
+  {gameId:'salti-magici',difficulties:['relaxed','normal'],difficulty:'relaxed',channels:['effects','music'],defaults:{theme:'light'},legacy:[
+    {key:'salti_magici_v1',fields:[field('language','language'),field('sound','effects'),field('sound','music'),field('difficulty','difficulty')]}]},
+  {gameId:'word-chain',difficulties:['2','3'],difficulty:'2',channels:[],legacy:[theme()]},
+];
 
-/** Capability profiles preserve the semantics of each game; they never rewrite saves. */
-const GAME_PROFILES = Object.freeze(Object.fromEntries([
-  ['agent-pippo', ['easy','normal','challenge'], 'normal', ['effects','voice']],
-  ['battleship', ['easy','medium','hard'], 'medium', ['effects']],
-  ['f1-paper-circuit', ['normal'], 'normal', []],
-  ['hangman', ['easy','medium','hard'], 'easy', ['effects','voice']],
-  ['ruota-del-tempo', ['easy','medium'], 'easy', ['effects','voice']],
-  ['salti-magici', ['relaxed','normal'], 'relaxed', ['effects','music']],
-  ['word-chain', ['2','3'], '2', []],
-].map(([gameId, difficulties, difficulty, channels]) => [gameId, Object.freeze({
-  gameId, difficulties: Object.freeze(difficulties), difficulty, channels: Object.freeze(channels),
-})])));
+const profiles=new Map();
+const freeze=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))freeze(child);Object.freeze(value);}return value;};
+function registerGameProfile(definition){
+  if(!definition||typeof definition.gameId!=='string'||!/^[a-z0-9][a-z0-9_-]*$/i.test(definition.gameId))throw new TypeError('Invalid game profile ID');
+  if(profiles.has(definition.gameId))throw new Error('Game profile already registered: '+definition.gameId);
+  const {gameId,difficulties=['normal'],difficulty=difficulties[0],channels=[],defaults={},messages={},legacy=[]}=definition;
+  if(!difficulties.length||new Set(difficulties).size!==difficulties.length||!difficulties.every(v=>typeof v==='string'&&v)||!difficulties.includes(difficulty)||new Set(channels).size!==channels.length||channels.some(v=>!['effects','music','voice'].includes(v)))throw new TypeError('Invalid profile capabilities');
+  if(Object.keys(defaults).some(key=>!Object.hasOwn(SETTINGS_DEFAULTS,key))||!Array.isArray(legacy)||legacy.some(adapter=>typeof adapter.key!=='string'||!adapter.key||!['text','json',undefined].includes(adapter.encoding)||!Array.isArray(adapter.fields)||adapter.fields.some(field=>typeof field.from!=='string'||!Object.hasOwn(SETTINGS_DEFAULTS,field.to))))throw new TypeError('Invalid profile defaults or legacy adapters');
+  const profile=freeze(structuredClone({gameId,difficulties,difficulty,channels,defaults,messages,legacy}));
+  new SettingsStore({gameId,difficulties,defaults:{...defaults,difficulty},storage:{getItem:()=>null,setItem:()=>{}}});
+  profiles.set(gameId,profile);return profile;
+}
+for(const profile of BUILTIN_PROFILES)registerGameProfile(profile);
+const GAME_PROFILES=Object.freeze(Object.fromEntries(profiles));
+function getGameProfile(gameId){const profile=profiles.get(gameId);if(!profile)throw new RangeError('Unknown game profile: '+gameId);return profile;}
+const listGameProfiles=()=>Object.freeze([...profiles.values()]);
+function createGameSettings(gameId,options={}){
+  const profile=getGameProfile(gameId);
+  return new SettingsStore({...options,gameId,difficulties:[...profile.difficulties],defaults:{...profile.defaults,...options.defaults,difficulty:profile.difficulty}});
+}
 
-function createGameSettings(gameId, options = {}) {
-  const profile = GAME_PROFILES[gameId];
-  if (!profile) throw new RangeError(`Unknown game profile: ${gameId}`);
-  return new SettingsStore({ ...options, gameId, difficulties: [...profile.difficulties],
-    defaults: { ...options.defaults, difficulty: profile.difficulty } });
+/** Independent reasons prevent a dialog, hidden tab or manual pause resuming one another. */
+class GameLifecycleController {
+  #reasons=new Set();#off=[];#input;#loop;#audio;#onPause;#onResume;#disposed=false;#wasRunning=false;#inputEnabled=true;
+  constructor({input,loop,audio,onPause=()=>{},onResume=()=>{},document=globalThis.document,target=globalThis.window,pauseOnBlur=false}={}){
+    this.#input=input;this.#loop=loop;this.#audio=audio;this.#onPause=onPause;this.#onResume=onResume;
+    const listen=(source,event,handler)=>{if(source){source.addEventListener(event,handler);this.#off.push(()=>source.removeEventListener(event,handler));}};
+    const visibility=()=>document.hidden?this.pause('visibility'):this.resume('visibility');
+    listen(document,'visibilitychange',visibility);
+    if(pauseOnBlur){listen(target,'blur',()=>this.pause('focus'));listen(target,'focus',()=>this.resume('focus'));}
+    if(document?.hidden)this.pause('visibility');
+  }
+  get paused(){return this.#reasons.size>0;}
+  get reasons(){return Object.freeze([...this.#reasons]);}
+  pause(reason='manual'){
+    if(this.#disposed)throw new Error('Lifecycle disposed');
+    if(typeof reason!=='string'||!reason)throw new TypeError('Invalid pause reason');
+    const paused=this.paused;this.#reasons.add(reason);
+    if(!paused){this.#inputEnabled=this.#input?.enabled??true;this.#wasRunning=this.#loop?.running??false;this.#input?.setEnabled(false);this.#input?.clear();this.#loop?.stop();this.#audio?.stop();this.#onPause();}
+  }
+  resume(reason='manual'){
+    if(this.#disposed)throw new Error('Lifecycle disposed');
+    if(this.#reasons.delete(reason)&&!this.paused){this.#input?.setEnabled(this.#inputEnabled);if(this.#wasRunning)this.#loop?.start();this.#onResume();}
+  }
+  dispose(){if(this.#disposed)return;for(const off of this.#off)off();this.#off=[];this.#input?.clear();this.#reasons.clear();this.#disposed=true;}
 }
 
 
 const stores = new Map(), controllers = new Map();
-const legacyKeys = {
-  'agent-pippo': ['agent_pippo_settings', 'porto_buffo_v2'],
-  battleship: ['theme'], 'f1-paper-circuit': [],
-  hangman: ['appLanguage', 'theme', 'sfxEnabled', 'italianHangmanState'],
-  'ruota-del-tempo': [], 'salti-magici': ['salti_magici_v1'], 'word-chain': ['theme'],
-};
 function createIntegratedSettings(gameId, { storage = () => globalThis.localStorage, onError } = {}) {
-  const profile = GAME_PROFILES[gameId];
-  if (!profile) throw new RangeError('Unknown game profile: ' + gameId);
-  const defaults = { ...SETTINGS_DEFAULTS, difficulty: profile.difficulty,
-    theme: gameId === 'agent-pippo' ? 'dark' : gameId === 'word-chain' || gameId === 'battleship' ? 'system' : 'light' };
-  const provider = typeof storage === 'function' ? storage : () => storage;
-  const read = (key, json = true) => {
-    try { const raw = provider().getItem(key); return raw === null ? null : json ? JSON.parse(raw) : raw; }
-    catch (error) { if (onError) onError(error, 'legacy:' + key); else console.warn('Legacy preference unavailable:', key, error); return null; }
+  const profile=getGameProfile(gameId),defaults={...SETTINGS_DEFAULTS,...profile.defaults,difficulty:profile.difficulty};
+  const provider=typeof storage==='function'?storage:()=>storage;
+  const allowed={language:['it','en'],theme:['system','light','dark'],difficulty:profile.difficulties};
+  const migrate=()=>{
+    const value={...defaults};
+    for(const adapter of profile.legacy){
+      try{
+        const raw=provider().getItem(adapter.key);if(raw===null)continue;
+        const previous=adapter.encoding==='text'?raw:JSON.parse(raw);
+        for(const {from,to} of adapter.fields){
+          const candidate=from===''?previous:previous&&Object.hasOwn(previous,from)?previous[from]:undefined;
+          if(Object.hasOwn(defaults,to)&&(allowed[to]?allowed[to].includes(candidate):typeof candidate==='boolean'))value[to]=candidate;
+        }
+      }catch(error){if(onError)onError(error,'legacy:'+adapter.key);else console.warn('Legacy preference unavailable:',adapter.key,error);}
+    }
+    return {version:1,data:value};
   };
-  const migrate = () => {
-    const value = { ...defaults };
-    if (['battleship', 'hangman', 'word-chain'].includes(gameId)) {
-      const theme = read('theme', false); if (['light', 'dark'].includes(theme)) value.theme = theme;
-    }
-    if (gameId === 'hangman') {
-      const language = read('appLanguage', false), effects = read('sfxEnabled');
-      if (['it', 'en'].includes(language)) value.language = language;
-      if (typeof effects === 'boolean') value.effects = effects;
-      const saved = read('italianHangmanState');
-      if (profile.difficulties.includes(saved?.currentDifficulty)) value.difficulty = saved.currentDifficulty;
-    }
-    if (gameId === 'agent-pippo') {
-      const saved = read('agent_pippo_settings'), progress = read('porto_buffo_v2');
-      if (['it', 'en'].includes(saved?.language)) value.language = saved.language;
-      if (typeof saved?.sounds === 'boolean') value.effects = saved.sounds;
-      if (profile.difficulties.includes(saved?.difficulty)) value.difficulty = saved.difficulty;
-      if (typeof progress?.voice === 'boolean') value.voice = progress.voice;
-    }
-    if (gameId === 'salti-magici') {
-      const saved = read('salti_magici_v1');
-      if (['it', 'en'].includes(saved?.language)) value.language = saved.language;
-      if (typeof saved?.sound === 'boolean') { value.effects = saved.sound; value.music = saved.sound; }
-      if (profile.difficulties.includes(saved?.difficulty)) value.difficulty = saved.difficulty;
-    }
-    return { version: 1, data: value };
-  };
-  return new SettingsStore({ gameId, storage: provider, onError, difficulties: [...profile.difficulties], defaults,
-    legacy: legacyKeys[gameId].map(key => ({ key, parse: raw => raw, decode: migrate })) });
+  return new SettingsStore({gameId,storage:provider,onError,difficulties:[...profile.difficulties],defaults,
+    legacy:profile.legacy.map(adapter=>({key:adapter.key,parse:raw=>raw,decode:migrate}))});
 }
 function getGameSettings(gameId) {
   if (!stores.has(gameId)) stores.set(gameId, createIntegratedSettings(gameId));
@@ -594,13 +618,13 @@ function toggleGameFullscreen(gameId) { return controllers.get(gameId)?.fullscre
 /** One integration controller shared by DOM and React consumers. No game state is owned here. */
 class GameUIController {
   #off; #media; #change; #gesture; #close; #onOpen; #onClose; #hadClass;
-  #navigation; #frame; #previous = {};
+  #navigation; #frame; #fullscreenOff; #previous = {};
   constructor({ gameId, settings = getGameSettings(gameId), root = document.body, mount,
     onOpen = () => {}, onClose = () => {} }) {
     if (controllers.has(gameId)) throw new Error('Game UI already mounted: ' + gameId);
     this.gameId = gameId; this.root = root; this.settings = settings;
     this.#onOpen = onOpen; this.#onClose = onClose;
-    const document = root.ownerDocument, profile = GAME_PROFILES[gameId];
+    const document = root.ownerDocument, profile = getGameProfile(gameId);
     this.#hadClass = root.classList.contains('ag-game'); root.classList.add('ag-game', 'ag-kit-host');
     root.dataset.kitIntegrated = gameId;
     this.appearance = new AppearanceController(root, settings);
@@ -608,7 +632,7 @@ class GameUIController {
     const messages = { it: { ...UI_MESSAGES.it, medium: 'Media', hard: 'Difficile', relaxed: 'Piccoli esploratori',
       '2': '2 lettere', '3': '3 lettere' }, en: { ...UI_MESSAGES.en, medium: 'Medium', hard: 'Hard',
       relaxed: 'Little explorers', '2': '2 letters', '3': '3 letters' } };
-    if (gameId === 'agent-pippo') { messages.it.voice = 'Lettura automatica'; messages.en.voice = 'Read dialogues aloud'; }
+    for(const language of Object.keys(messages))Object.assign(messages[language],profile.messages[language]);
     this.i18n = new I18n(messages);
     this.dialog = new SettingsDialog(root, settings, { i18n: this.i18n, channels: [...profile.channels],
       difficulties: profile.difficulties.length > 1 ? profile.difficulties.map(value => ({ value, label: value })) : [] });
@@ -621,6 +645,8 @@ class GameUIController {
     };
     this.settingsButton = button('settings', () => this.open(this.settingsButton));
     this.fullscreenButton = button('fullscreen', () => { this.fullscreen.toggle().catch(error => console.error('Fullscreen:', error)); });
+    this.settingsButton.setAttribute('aria-haspopup','dialog');this.settingsButton.setAttribute('aria-expanded','false');
+    this.dialog.element.id||=(gameId+'-kit-settings');this.settingsButton.setAttribute('aria-controls',this.dialog.element.id);
     if (mount) mount.append(this.controls);
     this.#media = matchMedia('(prefers-color-scheme: dark)');
     this.#change = () => {
@@ -629,12 +655,14 @@ class GameUIController {
       document.documentElement.classList.toggle('dark', dark); document.documentElement.lang = value.language;
       this.audio.setPreferences(value);
       if ((value.muted || !value.voice) && globalThis.speechSynthesis) globalThis.speechSynthesis.cancel();
-      this.settingsButton.textContent = this.i18n.t('settings'); this.fullscreenButton.textContent = this.i18n.t('fullscreen');
+      this.settingsButton.textContent = this.i18n.t('settings'); this.fullscreenButton.textContent = this.i18n.t(this.fullscreen.active?'exitFullscreen':'fullscreen');this.fullscreenButton.setAttribute('aria-pressed',String(this.fullscreen.active));
     };
+    this.#fullscreenOff=this.fullscreen.subscribe(()=>this.#change());
     this.#off = settings.subscribe(this.#change); this.#media.addEventListener('change', this.#change); this.#change();
     this.#gesture = event => { if (event.isTrusted && profile.channels.length && !settings.getSnapshot().muted) void this.audio.unlock(); };
     root.addEventListener('pointerdown', this.#gesture, true); root.addEventListener('keydown', this.#gesture, true);
-    this.#close = () => this.#onClose(); this.dialog.element.addEventListener('close', this.#close);
+    this.lifecycle=new GameLifecycleController({audio:this.audio,onPause:()=>this.#onOpen(),onResume:()=>this.#onClose(),document});
+    this.#close = () => {if(!this.dialog.element.open){this.settingsButton.setAttribute('aria-expanded','false');this.lifecycle.resume('settings');}}; this.dialog.element.addEventListener('close', this.#close);
     this.#navigation = new InputManager({ keys: {}, gamepad: {
       previous: { axis: 1, direction: -1, buttons: [12] }, next: { axis: 1, direction: 1, buttons: [13] },
       left: { buttons: [14] }, right: { buttons: [15] }, confirm: { buttons: [0] }, back: { buttons: [1] }, settings: { buttons: [8] },
@@ -643,7 +671,7 @@ class GameUIController {
       const value = this.#navigation.poll(), pressed = key => value[key] && !this.#previous[key];
       if (pressed('settings')) { if (this.dialog.element.open) this.dialog.close(); else this.open(this.settingsButton); }
       if (this.dialog.element.open) {
-        const nodes = [...this.dialog.element.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')];
+        const nodes = [...this.dialog.element.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(node=>!node.closest('[hidden]'));
         const active = document.activeElement, index = nodes.indexOf(active);
         if (pressed('previous')) nodes[(index - 1 + nodes.length) % nodes.length]?.focus();
         if (pressed('next')) nodes[(index + 1) % nodes.length]?.focus();
@@ -659,10 +687,15 @@ class GameUIController {
     this.#frame = requestAnimationFrame(navigate);
     controllers.set(gameId, this); globalThis.__gameKit = this;
   }
-  open(opener) { this.#onOpen(); this.dialog.open(opener); }
+  open(opener) {
+    if(this.dialog.element.open)return;
+    this.lifecycle.pause('settings');
+    try{this.dialog.open(opener);this.settingsButton.setAttribute('aria-expanded','true');}
+    catch(error){this.lifecycle.resume('settings');throw error;}
+  }
   async dispose() {
-    cancelAnimationFrame(this.#frame); this.#navigation.dispose();
-    this.#off(); this.#media.removeEventListener('change', this.#change);
+    cancelAnimationFrame(this.#frame); this.#navigation.dispose(); this.lifecycle.dispose();
+    this.#off(); this.#fullscreenOff(); this.#media.removeEventListener('change', this.#change);
     this.root.removeEventListener('pointerdown', this.#gesture, true); this.root.removeEventListener('keydown', this.#gesture, true);
     this.dialog.element.removeEventListener('close', this.#close); this.dialog.dispose(); this.appearance.dispose(); this.controls.remove();
     this.root.classList.remove('ag-kit-host'); if (!this.#hadClass) this.root.classList.remove('ag-game');
@@ -673,5 +706,5 @@ class GameUIController {
   }
 }
 
-return Object.freeze({VersionedStore,SETTINGS_DEFAULTS,SettingsStore,I18n,UI_MESSAGES,InputManager,AudioManager,FullscreenController,FixedStepLoop,AssetLoader,AppearanceController,SettingsDialog,GAME_PROFILES,createGameSettings,createIntegratedSettings,getGameSettings,getGameController,toggleGameFullscreen,GameUIController});
+return Object.freeze({VersionedStore,SETTINGS_DEFAULTS,SettingsStore,I18n,UI_MESSAGES,InputManager,AudioManager,FullscreenController,FixedStepLoop,AssetLoader,AppearanceController,SettingsDialog,BUILTIN_PROFILES,registerGameProfile,GAME_PROFILES,getGameProfile,listGameProfiles,createGameSettings,GameLifecycleController,createIntegratedSettings,getGameSettings,getGameController,toggleGameFullscreen,GameUIController});
 })();

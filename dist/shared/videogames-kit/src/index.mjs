@@ -6,4 +6,5 @@ export { FullscreenController } from './fullscreen.mjs';
 export { FixedStepLoop } from './loop.mjs';
 export { AssetLoader } from './assets.mjs';
 export { AppearanceController, SettingsDialog } from './ui.mjs';
-export { GAME_PROFILES, createGameSettings } from './profiles.mjs';
+export { GAME_PROFILES, createGameSettings, registerGameProfile, getGameProfile, listGameProfiles } from './profiles.mjs';
+export { GameLifecycleController } from './lifecycle.mjs';

@@ -18,7 +18,7 @@ export class I18n {
   }
 }
 export const UI_MESSAGES = Object.freeze({
-  it: { settings: 'Impostazioni', close: 'Chiudi', language: 'Lingua', theme: 'Aspetto',
+  it: { settingsHint: 'Le modifiche si applicano subito. I progressi della partita restano conservati.', displayGroup: 'Lingua e aspetto', audioGroup: 'Audio', playGroup: 'Partita', accessibilityGroup: 'Accessibilità', done: 'Fatto', cancel: 'Annulla', confirmReset: 'Ripristina', settingsError: 'Modifica non riuscita. Riprova.', exitFullscreen: 'Esci da schermo intero', settings: 'Impostazioni', close: 'Chiudi', language: 'Lingua', theme: 'Aspetto',
     system: 'Sistema', light: 'Chiaro', dark: 'Scuro', motion: 'Animazioni', reduced: 'Ridotte',
     contrast: 'Contrasto', normal: 'Normale', high: 'Aumentato', muted: 'Disattiva tutto l’audio',
     effects: 'Effetti sonori', music: 'Musica', voice: 'Voce', difficulty: 'Difficoltà',
@@ -28,7 +28,7 @@ export const UI_MESSAGES = Object.freeze({
     memory: 'Salvataggio non disponibile: preferenze mantenute per questa sessione.',
     future: 'Preferenze di una versione più recente: aggiornamento necessario.',
     invalid: 'Preferenze non valide: applicati i valori iniziali.', easy: 'Guidata', challenge: 'Sfida' },
-  en: { settings: 'Settings', close: 'Close', language: 'Language', theme: 'Appearance',
+  en: { settingsHint: 'Changes apply immediately. Your game progress is preserved.', displayGroup: 'Language and appearance', audioGroup: 'Audio', playGroup: 'Game', accessibilityGroup: 'Accessibility', done: 'Done', cancel: 'Cancel', confirmReset: 'Reset', settingsError: 'Could not apply the change. Try again.', exitFullscreen: 'Exit fullscreen', settings: 'Settings', close: 'Close', language: 'Language', theme: 'Appearance',
     system: 'System', light: 'Light', dark: 'Dark', motion: 'Motion', reduced: 'Reduced',
     contrast: 'Contrast', normal: 'Normal', high: 'High', muted: 'Mute all audio',
     effects: 'Sound effects', music: 'Music', voice: 'Voice', difficulty: 'Difficulty',
