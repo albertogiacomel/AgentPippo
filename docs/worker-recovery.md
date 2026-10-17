@@ -47,3 +47,9 @@ L'installazione deve verificare nuovamente chiave e fingerprint del destinatario
 e creare il secret soltanto se il repository non ne possiede già uno. Non viene
 ruotata o revocata la credenziale sorgente. Il rollback dell'aggiunta è la rimozione
 del solo nuovo secret dai destinatari; le credenziali preesistenti non si toccano.
+
+Le sonde HTTP anonime sono riportate separatamente e possono ricevere pagine
+di sicurezza. Il gate decisivo apre il dominio canonico in Chrome, attende il
+gioco, verifica gli SHA256 dei bundle tramite richieste browser e prova il
+gameplay. Una pagina Cloudflare Access su workers.dev non è accettata come sito
+pronto; per questo si usa il dominio applicativo pubblico configurato.
