@@ -73,7 +73,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: albertogiacomel/AgentPippo
-          ref: 464886682adccc0a6446021accf6f099b8fc0436
+          ref: 4f0d3f1d734a54a53483e692d925a33084ddeb05
           path: .maintenance
           persist-credentials: false
       - name: Save previous deployment and HTTP baseline
