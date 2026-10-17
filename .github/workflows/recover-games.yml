@@ -8,6 +8,21 @@ on:
         required: true
         default: both
         options: [both, Battleship, Word-Chain-Game]
+      source_ref:
+        description: Source commit or branch
+        type: string
+        default: main
+  workflow_call:
+    inputs:
+      game:
+        required: true
+        type: string
+      source_ref:
+        required: true
+        type: string
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: true
 permissions:
   contents: read
 jobs:
@@ -26,11 +41,16 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: '291702df5c8eef8684918f4f92ca4c4d'
       BROWSER_BINARY: /usr/bin/google-chrome
     steps:
+      - name: Validate selected game
+        run: |
+          case "$SELECTED_GAME" in both|Battleship|Word-Chain-Game) ;; *) exit 1 ;; esac
+        env:
+          SELECTED_GAME: ${{ inputs.game }}
       - name: Checkout game
         uses: actions/checkout@v7
         with:
           repository: albertogiacomel/${{ matrix.game }}
-          ref: main
+          ref: ${{ inputs.source_ref || 'main' }}
           persist-credentials: false
       - uses: actions/setup-node@v7
         with:
@@ -45,7 +65,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: albertogiacomel/AgentPippo
-          ref: ${{ github.sha }}
+          ref: 5130358820dbe8d3f38f4fa26afd7ae2a452a174
           path: .maintenance
           persist-credentials: false
       - name: Save previous deployment and HTTP baseline

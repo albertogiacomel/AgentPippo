@@ -1,0 +1,2 @@
+cyclopts==5.2.0
+PyNaCl==1.6.2

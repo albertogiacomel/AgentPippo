@@ -19,6 +19,20 @@ e Wrangler, non durante build o test.
 Questo percorso ripristina la pubblicazione quando Workers Builds non accetta
 il vecchio token. **Non ripara né disabilita il trigger Git di Cloudflare**:
 il relativo errore rimane da risolvere con un token utente valido nel pannello.
-Il recupero è manuale; i futuri push non attivano questo workflow centrale.
+Il workflow è anche riutilizzabile dai due repository: il chiamante passa il
+proprio commit esatto e il proprio secret; l'implementazione condivisa è fissata
+a un commit. La pubblicazione automatica può quindi seguire i test di ogni push.
 Non considerare verde il controllo esterno Workers Builds per il solo fatto
 che questa distribuzione è riuscita.
+
+## Credenziali dei due repository
+
+Il workflow manuale `Seal deployment credential for game repositories` cifra
+il secret esistente con le due chiavi pubbliche GitHub revisionate nello script.
+L'artefatto contiene soltanto ciphertext libsodium, destinato alle API Secrets
+dei due repository dello stesso proprietario. La chiave privata è detenuta da
+GitHub: il token in chiaro non viene esportato dal runner o scritto negli artifact.
+L'installazione deve verificare nuovamente chiave e fingerprint del destinatario,
+e creare il secret soltanto se il repository non ne possiede già uno. Non viene
+ruotata o revocata la credenziale sorgente. Il rollback dell'aggiunta è la rimozione
+del solo nuovo secret dai destinatari; le credenziali preesistenti non si toccano.
