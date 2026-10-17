@@ -67,9 +67,12 @@ if (phase === 'before') report.http = await measureHttp();
 if (phase === 'after') {
   const before = JSON.parse(await readFile(join(folder, 'before.json'), 'utf8'));
   assert.notEqual(current.id, before.deployment?.id, 'No new deployment active');
+  const version = await api('/workers/scripts/' + worker + '/versions/' + current.versions[0].version_id);
+  assert.equal(version.annotations?.['workers/tag'], process.env.SOURCE_SHA, 'Active Cloudflare version does not match the tested Git commit');
+  report.active_source_sha = version.annotations['workers/tag'];
   report.http = await measureHttp();
   report.http.anonymous_probe_blocked = report.http.statuses.some(status => status !== 200);
-  report.integrity_gate = 'Required in the following real-browser step; anonymous HTTP may receive Cloudflare security pages';
+  report.integrity_gate = 'Authenticated active-version SHA plus pre-deploy browser tests; public browser verification runs separately because edge security may block GitHub runners';
   report.source_sha = process.env.SOURCE_SHA;
   report.speedup = before.http.statuses.every(status => status === 200) && report.http.statuses.every(status => status === 200) ? before.http.mean_ms / report.http.mean_ms : null;
 }

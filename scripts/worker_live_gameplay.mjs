@@ -14,6 +14,11 @@ try {
     if (await page.evaluate('Boolean(window.__gameKit)')) { ready = true; break; }
     await delay(100);
   }
+  if (!ready) {
+    const diagnostics = await page.evaluate('({url:location.href,title:document.title,body:document.body.innerText.slice(0,400)})');
+    await writeFile(join(artifacts, 'live-unavailable.json'), JSON.stringify(diagnostics, null, 2) + '\n', 'utf8');
+    console.error('Live browser response:', diagnostics);
+  }
   assert.ok(ready, 'Published game did not initialize');
   const index = await readFile(join(root, 'dist/index.html'), 'utf8');
   const paths = [...index.matchAll(/(?:src|href)="([^"]+)"/g)].map(m => m[1])

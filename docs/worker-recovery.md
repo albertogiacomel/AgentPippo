@@ -14,9 +14,9 @@ versione cancellata dal proprietario.
 
 Prima del deploy esegue build, integrità del kit, migrazioni e browser locale.
 Salva la versione precedente, misura dieci navigazioni HTTP e interrompe
-l'operazione se trova una distribuzione graduale. Dopo il deploy controlla
-la nuova distribuzione, titolo/root/bundle della pagina, SHA256 dei bundle JS/CSS,
-HTTP e gameplay reale in Chrome. Cloudflare può aggiungere lo script di sicurezza
+l'operazione se trova una distribuzione graduale. Dopo il deploy verifica la nuova distribuzione e il tag del commit tramite API
+autenticata. La verifica pubblica separata controlla SHA256 dei bundle JS/CSS e
+gameplay reale in Chrome sul dominio canonico. Cloudflare può aggiungere lo script di sicurezza
 al documento HTML: non si richiede l'uguaglianza byte per byte dell'HTML modificato
 dal CDN. Lo script di sicurezza resta attivo; i bundle applicativi devono invece
 coincidere esattamente con la build collaudata.
@@ -53,3 +53,18 @@ di sicurezza. Il gate decisivo apre il dominio canonico in Chrome, attende il
 gioco, verifica gli SHA256 dei bundle tramite richieste browser e prova il
 gameplay. Una pagina Cloudflare Access su workers.dev non è accettata come sito
 pronto; per questo si usa il dominio applicativo pubblico configurato.
+
+## Gate di produzione e verifiche pubbliche
+
+I runner GitHub possono ricevere una risposta di sicurezza prima di raggiungere
+l’applicazione. Non si disabilitano WAF o Cloudflare Access per aggirarla. Il
+gate automatico richiede build e gameplay in Chrome locale prima del deploy, poi
+verifica via API autenticata che la versione attiva sia taggata con il commit
+esatto collaudato. Le sonde HTTP vengono riportate con i loro veri status.
+
+Il test del dominio pubblico conserva i controlli di SHA256 e gameplay: viene
+eseguito da una postazione che può accedere normalmente al sito, con il token
+Cloudflare assente. Può anche essere richiesto nel workflow con
+public_live_check=true; se il runner è bloccato, fallisce e salva la risposta
+osservata. Un check pubblico saltato nel runner non è dichiarato PASS.
+La verifica pubblica da postazione è registrata separatamente sul commit.
