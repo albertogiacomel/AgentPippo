@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "source": {
     "repository": "albertogiacomel/videogames-kit",
-    "commit": "618d5c528e3ba77aa7ed7ffb6f2905f40585146a",
+    "commit": "19492e66ab455245d5773b1f17110c3a202cf3c6",
     "dirty": false
   },
   "files": [
@@ -74,13 +74,13 @@
     },
     {
       "path": "styles/game-ui.css",
-      "bytes": 5942,
-      "sha256": "ba7b90f42c64053b58df6350951c4509bf57120970075644a1e3914de435094a"
+      "bytes": 7673,
+      "sha256": "b13dc820c3d16e7d86dfcf1e7f0e77c114993f75e4dce8abf0c534095ee0d6ad"
     },
     {
       "path": "styles/integration.css",
       "bytes": 1045,
-      "sha256": "91e32ace11642a88a7766d0b3f45cf1f96dbe251e85ddec816afab3faef18157"
+      "sha256": "a85f556b7a6d6658bd6eafe036329746378d7cd28ca07f52ba590e70d72e11f8"
     }
   ],
   "classicArtifacts": [
@@ -91,8 +91,8 @@
     },
     {
       "path": "game-kit.css",
-      "bytes": 6988,
-      "sha256": "332b7063b6805afb731e658787a19eddc5d80caa43875033418ce3d684e18561"
+      "bytes": 8719,
+      "sha256": "bdf813ee8ca6a4886cf05e3c8a25455b7f70d97c22c2aa471d2eae32dc4ac85c"
     }
   ]
 }

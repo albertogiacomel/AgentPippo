@@ -31,3 +31,18 @@
 .ag-game .ag-dialog-footer>.ag-button{width:100%;min-width:0}
 .ag-game .ag-board-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:1000px;gap:var(--ag-grid-gap)}
 @media(max-width:700px){.ag-grid,.ag-grid--3,.ag-game .ag-board-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* A single readable type scale for shared panels, controls and feedback. */
+.ag-game{--ag-font:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--ag-type-body:1rem;--ag-type-label:.9375rem;--ag-type-caption:.875rem;--ag-type-title:clamp(1.375rem,2.2vw,1.75rem);font-family:var(--ag-font);font-size:var(--ag-type-body);line-height:1.5}
+.ag-game .ag-title{font-family:var(--ag-font);font-size:var(--ag-type-title);font-weight:700;line-height:1.25;letter-spacing:-.02em;text-wrap:balance}
+.ag-game .ag-dialog{font-family:var(--ag-font);font-size:var(--ag-type-body);line-height:1.5}
+.ag-game .ag-settings-group legend{font:650 var(--ag-type-label)/1.4 var(--ag-font);letter-spacing:.01em}
+.ag-game .ag-field{font:500 var(--ag-type-label)/1.45 var(--ag-font)}
+.ag-game .ag-dialog :is(select,input,button){font:500 var(--ag-type-body)/1.4 var(--ag-font);letter-spacing:normal;text-transform:none}
+.ag-game .ag-status{font:400 var(--ag-type-caption)/1.5 var(--ag-font);text-wrap:pretty}
+.ag-game .ag-kit-controls .ag-button{font:600 var(--ag-type-caption)/1.4 var(--ag-font)}
+.ag-game .ag-equal-items :is(.card,.case-entry) h3{font:650 1.125rem/1.35 var(--ag-font)}
+.ag-game .ag-equal-items :is(.card,.case-entry) p{font:400 var(--ag-type-caption)/1.5 var(--ag-font)}
+.ag-game .world strong,.ag-game .level-card strong{font:650 var(--ag-type-body)/1.35 var(--ag-font);white-space:normal;overflow-wrap:anywhere}
+.ag-game .world small,.ag-game .level-card small{font:400 var(--ag-type-caption)/1.5 var(--ag-font);white-space:normal;overflow-wrap:anywhere}
+@media(prefers-reduced-motion:reduce){.ag-game[data-ag-motion=system] :is(.ag-button,.ag-dialog){animation:none;transition:none;scroll-behavior:auto}}

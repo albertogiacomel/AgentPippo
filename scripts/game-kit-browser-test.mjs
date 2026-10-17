@@ -46,6 +46,8 @@ try{
  assert.equal(await evaluate('window.__gameKit.dialog.element.scrollWidth<=window.__gameKit.dialog.element.clientWidth'),true);
  const geometry=await evaluate(`(()=>{const dialog=window.__gameKit.dialog.element;return {groups:[...dialog.querySelectorAll('fieldset')].map(e=>{const r=e.getBoundingClientRect();return {x:r.x,width:r.width}}),controls:[...dialog.querySelectorAll('.ag-field select')].map(e=>{const r=e.getBoundingClientRect();return {x:r.x,width:r.width}})}})()`);
  for(const boxes of [geometry.groups,geometry.controls]){assert.ok(Math.max(...boxes.map(b=>b.width))-Math.min(...boxes.map(b=>b.width))<=1,'Equal box widths');assert.ok(Math.max(...boxes.map(b=>b.x))-Math.min(...boxes.map(b=>b.x))<=1,'Aligned grid columns');}
+ const typography=await evaluate(`Array.from(window.__gameKit.dialog.element.querySelectorAll('select,button,.ag-field>span,.ag-status')).filter(e=>!e.closest('[hidden]')).map(e=>{const s=getComputedStyle(e);return {size:parseFloat(s.fontSize),family:s.fontFamily};})`);
+ assert.equal(new Set(typography.map(t=>t.family)).size,1,'Shared settings font family');assert.ok(typography.every(t=>t.size>=14),'Readable settings typography');
  const screenshot=await command('Page.captureScreenshot',{format:'png'});await writeFile(join(page.artifacts,'settings-mobile.png'),Buffer.from(screenshot.data,'base64'));
  await verifyGameplay(page,'agent-pippo');
  const cardGroups=await evaluate(`Array.from(document.querySelectorAll('.ag-equal-items')).map(group=>Array.from(group.children).map(e=>e.getBoundingClientRect().width).filter(width=>width>0)).filter(widths=>widths.length>1)`);
