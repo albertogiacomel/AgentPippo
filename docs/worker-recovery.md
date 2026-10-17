@@ -15,7 +15,11 @@ versione cancellata dal proprietario.
 Prima del deploy esegue build, integrità del kit, migrazioni e browser locale.
 Salva la versione precedente, misura dieci navigazioni HTTP e interrompe
 l'operazione se trova una distribuzione graduale. Dopo il deploy controlla
-la nuova distribuzione, l'hash dell'HTML, HTTP e gameplay reale in Chrome.
+la nuova distribuzione, titolo/root/bundle della pagina, SHA256 dei bundle JS/CSS,
+HTTP e gameplay reale in Chrome. Cloudflare può aggiungere lo script di sicurezza
+al documento HTML: non si richiede l'uguaglianza byte per byte dell'HTML modificato
+dal CDN. Lo script di sicurezza resta attivo; i bundle applicativi devono invece
+coincidere esattamente con la build collaudata.
 Un fallimento delle verifiche live ripristina la versione precedente.
 
 Gli artifact contengono ricevute, screenshot, versione per rollback e mean,

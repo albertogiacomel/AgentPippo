@@ -13,6 +13,7 @@ const token = process.env.CLOUDFLARE_API_TOKEN;
 assert.ok(token, 'Cloudflare credential required');
 const folder = resolve('artifacts/worker-recovery');
 await mkdir(folder, { recursive: true });
+const publicHeaders = { 'Cache-Control': 'no-cache', 'User-Agent': 'Mozilla/5.0 (compatible; GameVerification/1.0)' };
 const base = 'https://api.cloudflare.com/client/v4/accounts/291702df5c8eef8684918f4f92ca4c4d';
 async function api(path, allowMissing = false) {
   const response = await fetch(base + path, { headers: { Authorization: 'Bearer ' + token }, signal: AbortSignal.timeout(30000) });
@@ -41,7 +42,7 @@ if (phase === 'before') {
   const probes = [];
   for (const candidate of candidates) {
     try {
-      const response = await fetch(candidate, { signal: AbortSignal.timeout(30000) });
+      const response = await fetch(candidate, { headers: publicHeaders, signal: AbortSignal.timeout(30000) });
       await response.arrayBuffer(); probes.push({ url: candidate, status: response.status });
       if (response.ok) { url = candidate; break; }
     } catch (error) {
@@ -54,11 +55,12 @@ if (phase === 'before') {
   assert.ok(url, 'No public Worker URL responds successfully: ' + JSON.stringify(probes));
 } else url = JSON.parse(await readFile(join(folder, 'before.json'), 'utf8')).url;
 // Same serial HTTP workload before and after, in the same runner. Not FPS or UI latency.
+async function measureHttp() {
 const samples = [], statuses = [];
 for (let i = 0; i < 10; i++) {
   const start = performance.now();
   try {
-    const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' }, signal: AbortSignal.timeout(30000) });
+    const response = await fetch(url, { headers: publicHeaders, signal: AbortSignal.timeout(30000) });
     await response.arrayBuffer(); statuses.push(response.status);
   } catch (error) {
     if (current || phase !== 'before' || !allowCreate) throw error;
@@ -67,23 +69,35 @@ for (let i = 0; i < 10; i++) {
   samples.push(performance.now() - start);
 }
 const sorted = [...samples].sort((a, b) => a - b), mean = samples.reduce((a, b) => a + b, 0) / samples.length;
+return { samples: samples.length, statuses, mean_ms: mean, p50_ms: sorted[4], p95_ms: sorted[9], ops_per_second: 1000 / mean };
+}
 const report = { timestamp: new Date().toISOString(), worker, phase, url,
   deployment: current ? { id: current.id, versions: current.versions } : null,
-  http: { samples: samples.length, statuses, mean_ms: mean, p50_ms: sorted[4], p95_ms: sorted[9], ops_per_second: 1000 / mean } };
+  http: null };
+if (phase === 'before') report.http = await measureHttp();
 if (phase === 'after') {
   const before = JSON.parse(await readFile(join(folder, 'before.json'), 'utf8'));
   assert.notEqual(current.id, before.deployment?.id, 'No new deployment active');
   const index = await readFile(resolve('dist/index.html'));
+  const indexText = index.toString('utf8');
   const expected = createHash('sha256').update(index).digest('hex');
+  const assetPaths = [...indexText.matchAll(/(?:src|href)="([^"]+)"/g)].map(m => m[1])
+    .filter(path => /^(?:\.\/|\/)?assets\/[^?#]+\.(?:js|css)$/.test(path));
+  assert.ok(assetPaths.length, 'No local build bundles found');
+  const title = indexText.match(/<title[^>]*>([^<]*)/i)?.[1];
+  const isApplication = (body, status) => {
+    const html = body.toString('utf8');
+    return status === 200 && html.includes('id="root"') && html.match(/<title[^>]*>([^<]*)/i)?.[1] === title && assetPaths.every(path => html.includes(path));
+  };
   let actual, lastBody, lastStatus;
   for (let retry = 0; retry < 30; retry++) {
-    const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' }, signal: AbortSignal.timeout(30000) });
+    const response = await fetch(url, { headers: publicHeaders, signal: AbortSignal.timeout(30000) });
     lastBody = Buffer.from(await response.arrayBuffer()); lastStatus = response.status;
     actual = createHash('sha256').update(lastBody).digest('hex');
-    if (response.ok && actual === expected) break;
+    if (isApplication(lastBody, lastStatus)) break;
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
-  if (actual !== expected) {
+  if (!isApplication(lastBody, lastStatus)) {
     const html = lastBody.toString('utf8');
     const diagnostics = { status: lastStatus, expectedBytes: index.length, actualBytes: lastBody.length,
       expectedHash: expected, actualHash: actual, title: html.match(/<title[^>]*>([^<]*)/i)?.[1],
@@ -94,9 +108,22 @@ if (phase === 'after') {
     await writeFile(join(folder, 'html-diagnostics.json'), JSON.stringify(diagnostics, null, 2) + '\n', 'utf8');
     console.log('HTML diagnostics: ' + JSON.stringify(diagnostics));
   }
-  assert.equal(actual, expected, 'Published HTML does not match the tested build');
-  assert.ok(statuses.every(status => status === 200), 'Live navigation failed');
+  assert.ok(isApplication(lastBody, lastStatus), 'Published HTML is not the tested application');
+  report.assets = [];
+  for (const path of assetPaths) {
+    const remote = new URL(path, url);
+    assert.equal(remote.origin, new URL(url).origin, 'Build asset must be first-party');
+    const local = await readFile(resolve('dist', '.' + remote.pathname));
+    const response = await fetch(remote, { headers: publicHeaders, signal: AbortSignal.timeout(30000) });
+    assert.equal(response.status, 200, 'Published asset unavailable: ' + path);
+    const assetHash = createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex');
+    assert.equal(assetHash, createHash('sha256').update(local).digest('hex'), 'Published bundle differs from tested build: ' + path);
+    report.assets.push({ path, sha256: assetHash });
+  }
+  report.http = await measureHttp();
+  assert.ok(report.http.statuses.every(status => status === 200), 'Live navigation failed');
   report.index_sha256 = actual;
+  report.html_edge_transformed = actual !== expected;
   report.source_sha = process.env.SOURCE_SHA;
   report.speedup = before.http.statuses.every(status => status === 200) ? before.http.mean_ms / report.http.mean_ms : null;
 }
