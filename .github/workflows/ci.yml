@@ -7,11 +7,11 @@ jobs:
     name: Build floppy edition
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - run: npm ci
@@ -19,7 +19,7 @@ jobs:
       - run: python -m ruff check scripts/build_floppy.py
       - run: python -m ruff format --check scripts/build_floppy.py
       - run: npm run build:floppy
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: AgentPippo-floppy
           path: artifacts/floppy/AgentPippo-floppy.zip
@@ -27,8 +27,8 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - run: npm ci
@@ -44,7 +44,7 @@ jobs:
           BROWSER_BINARY: /usr/bin/google-chrome
       - run: npm test
       - run: npm run test:cloud
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: game-kit-verification
@@ -60,8 +60,8 @@ jobs:
       group: agent-pippo-production
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
       - run: npm ci
