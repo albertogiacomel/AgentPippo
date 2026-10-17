@@ -44,8 +44,12 @@ try{
  await command('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  await evaluate('document.querySelector("[data-kit-settings]").click()');await wait('window.__gameKit.dialog.element.open');
  assert.equal(await evaluate('window.__gameKit.dialog.element.scrollWidth<=window.__gameKit.dialog.element.clientWidth'),true);
+ const geometry=await evaluate(`(()=>{const dialog=window.__gameKit.dialog.element;return {groups:[...dialog.querySelectorAll('fieldset')].map(e=>{const r=e.getBoundingClientRect();return {x:r.x,width:r.width}}),controls:[...dialog.querySelectorAll('.ag-field select')].map(e=>{const r=e.getBoundingClientRect();return {x:r.x,width:r.width}})}})()`);
+ for(const boxes of [geometry.groups,geometry.controls]){assert.ok(Math.max(...boxes.map(b=>b.width))-Math.min(...boxes.map(b=>b.width))<=1,'Equal box widths');assert.ok(Math.max(...boxes.map(b=>b.x))-Math.min(...boxes.map(b=>b.x))<=1,'Aligned grid columns');}
  const screenshot=await command('Page.captureScreenshot',{format:'png'});await writeFile(join(page.artifacts,'settings-mobile.png'),Buffer.from(screenshot.data,'base64'));
  await verifyGameplay(page,'agent-pippo');
+ const cardGroups=await evaluate(`Array.from(document.querySelectorAll('.ag-equal-items')).map(group=>Array.from(group.children).map(e=>e.getBoundingClientRect().width).filter(width=>width>0)).filter(widths=>widths.length>1)`);
+ for(const widths of cardGroups)assert.ok(Math.max(...widths)-Math.min(...widths)<=1,'Native cards share equal grid widths');
  assert.deepEqual(page.errors,[]);
  await writeFile(join(page.artifacts,'verification.json'),JSON.stringify({timestamp:new Date().toISOString(),status:'PASS',checks:['native language/theme wiring','persist/reload','Escape/focus','CSS fullscreen','gamepad menu','mobile settings','native gameplay action'],errors:page.errors},null,2),'utf8');
  console.log('PASS shared game settings: native UI, persistence, focus, fullscreen, controller and mobile');

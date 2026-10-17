@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "source": {
     "repository": "albertogiacomel/videogames-kit",
-    "commit": "6d916d602253ea8160922d9867eebb2cdb58ebfc",
+    "commit": "618d5c528e3ba77aa7ed7ffb6f2905f40585146a",
     "dirty": false
   },
   "files": [
@@ -74,8 +74,8 @@
     },
     {
       "path": "styles/game-ui.css",
-      "bytes": 4514,
-      "sha256": "d749743a2e487b1c4cb20fa4765a2b99dd7c57a0b82acb8af5108ea94d3bc229"
+      "bytes": 5942,
+      "sha256": "ba7b90f42c64053b58df6350951c4509bf57120970075644a1e3914de435094a"
     },
     {
       "path": "styles/integration.css",
@@ -91,8 +91,8 @@
     },
     {
       "path": "game-kit.css",
-      "bytes": 5560,
-      "sha256": "13c4f43a7f4b8f37db69613cb1daed8a2ffc4449a3ed0c46c24270b2a5f33b2f"
+      "bytes": 6988,
+      "sha256": "332b7063b6805afb731e658787a19eddc5d80caa43875033418ce3d684e18561"
     }
   ]
 }
