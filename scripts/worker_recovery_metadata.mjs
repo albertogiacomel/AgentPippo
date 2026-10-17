@@ -58,12 +58,24 @@ if (phase === 'after') {
   assert.notEqual(current.id, before.deployment.id, 'No new deployment active');
   const index = await readFile(resolve('dist/index.html'));
   const expected = createHash('sha256').update(index).digest('hex');
-  let actual;
+  let actual, lastBody, lastStatus;
   for (let retry = 0; retry < 30; retry++) {
     const response = await fetch(url, { headers: { 'Cache-Control': 'no-cache' }, signal: AbortSignal.timeout(30000) });
-    actual = createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex');
+    lastBody = Buffer.from(await response.arrayBuffer()); lastStatus = response.status;
+    actual = createHash('sha256').update(lastBody).digest('hex');
     if (response.ok && actual === expected) break;
     await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  if (actual !== expected) {
+    const html = lastBody.toString('utf8');
+    const diagnostics = { status: lastStatus, expectedBytes: index.length, actualBytes: lastBody.length,
+      expectedHash: expected, actualHash: actual, title: html.match(/<title[^>]*>([^<]*)/i)?.[1],
+      expectedScripts: [...index.toString('utf8').matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]),
+      actualScripts: [...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(m => m[1]),
+      normalizedHash: createHash('sha256').update(html.replace(/\r\n/g, '\n')).digest('hex'),
+      expectedNormalizedHash: createHash('sha256').update(index.toString('utf8').replace(/\r\n/g, '\n')).digest('hex') };
+    await writeFile(join(folder, 'html-diagnostics.json'), JSON.stringify(diagnostics, null, 2) + '\n', 'utf8');
+    console.log('HTML diagnostics: ' + JSON.stringify(diagnostics));
   }
   assert.equal(actual, expected, 'Published HTML does not match the tested build');
   assert.ok(statuses.every(status => status === 200), 'Live navigation failed');
