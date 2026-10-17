@@ -1,0 +1,87 @@
+name: Publish Battleship and Word Chain
+on:
+  workflow_dispatch:
+    inputs:
+      game:
+        description: Existing Worker to publish
+        type: choice
+        required: true
+        default: both
+        options: [both, Battleship, Word-Chain-Game]
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        game: ${{ fromJSON(inputs.game == 'both' && '["Battleship","Word-Chain-Game"]' || inputs.game == 'Battleship' && '["Battleship"]' || '["Word-Chain-Game"]') }}
+    concurrency:
+      group: recover-production-${{ matrix.game }}
+      cancel-in-progress: false
+    env:
+      GAME_WORKER: ${{ matrix.game == 'Battleship' && 'battleship' || 'word-chain-game' }}
+      GAME_ID: ${{ matrix.game == 'Battleship' && 'battleship' || 'word-chain' }}
+      CLOUDFLARE_ACCOUNT_ID: '291702df5c8eef8684918f4f92ca4c4d'
+      BROWSER_BINARY: /usr/bin/google-chrome
+    steps:
+      - name: Checkout game
+        uses: actions/checkout@v7
+        with:
+          repository: albertogiacomel/${{ matrix.game }}
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Record source commit
+        run: echo "SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:kit
+      - run: npm run test:kit:browser
+      - name: Checkout maintenance scripts
+        uses: actions/checkout@v7
+        with:
+          repository: albertogiacomel/AgentPippo
+          ref: ${{ github.sha }}
+          path: .maintenance
+          persist-credentials: false
+      - name: Save previous deployment and HTTP baseline
+        id: before
+        run: node .maintenance/scripts/worker_recovery_metadata.mjs
+        env:
+          RECOVERY_PHASE: before
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Publish tested build on existing Worker
+        id: deploy
+        run: npx --yes wrangler@4.149.0 deploy --keep-vars --config wrangler.json --name "$GAME_WORKER" --tag "$SOURCE_SHA" --message "GitHub ${{ matrix.game }}@$SOURCE_SHA"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Verify deployment and HTTP comparison
+        id: after
+        run: node .maintenance/scripts/worker_recovery_metadata.mjs
+        env:
+          RECOVERY_PHASE: after
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - name: Verify actual live gameplay
+        id: live
+        run: node .maintenance/scripts/worker_live_gameplay.mjs
+        env:
+          GAME_URL: ${{ steps.before.outputs.game_url }}
+      - name: Restore previous version if live verification fails
+        if: failure() && steps.deploy.outcome == 'success' && (steps.after.outcome == 'failure' || steps.live.outcome == 'failure')
+        run: npx --yes wrangler@4.149.0 rollback "$ROLLBACK_VERSION" --name "$GAME_WORKER" --yes
+        env:
+          ROLLBACK_VERSION: ${{ steps.before.outputs.rollback_version }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: recovery-${{ matrix.game }}
+          path: |
+            artifacts/worker-recovery/*.json
+            artifacts/worker-recovery/*.png
+            artifacts/game-kit/*.json
+            artifacts/game-kit/*.png
