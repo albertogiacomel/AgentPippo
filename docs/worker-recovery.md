@@ -5,6 +5,13 @@ distribuzione già disponibile in questo repository, senza esportarlo. Accetta
 soltanto i due repository pubblici e pubblica sui Worker esistenti `battleship`
 e `word-chain-game` dell'account dei giochi. Non crea progetti o domini.
 
+Eccezione esplicita: dopo che il proprietario ha cancellato manualmente i due
+Worker, `allow_create=true` consente di ricrearli con gli stessi nomi e i domini
+canonici presenti nei repository. In questo caso la versione precedente non
+esiste più: il report riporta deployment precedente nullo, indisponibilità prima
+del ripristino e speedup non calcolabile. Non è possibile ripristinare una
+versione cancellata dal proprietario.
+
 Prima del deploy esegue build, integrità del kit, migrazioni e browser locale.
 Salva la versione precedente, misura dieci navigazioni HTTP e interrompe
 l'operazione se trova una distribuzione graduale. Dopo il deploy controlla

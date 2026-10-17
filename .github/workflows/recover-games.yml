@@ -12,6 +12,10 @@ on:
         description: Source commit or branch
         type: string
         default: main
+      allow_create:
+        description: Recreate a Worker explicitly deleted by the owner
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       game:
@@ -20,6 +24,9 @@ on:
       source_ref:
         required: true
         type: string
+      allow_create:
+        type: boolean
+        default: false
     secrets:
       CLOUDFLARE_API_TOKEN:
         required: true
@@ -40,6 +47,7 @@ jobs:
       GAME_ID: ${{ matrix.game == 'Battleship' && 'battleship' || 'word-chain' }}
       CLOUDFLARE_ACCOUNT_ID: '291702df5c8eef8684918f4f92ca4c4d'
       BROWSER_BINARY: /usr/bin/google-chrome
+      ALLOW_CREATE: ${{ inputs.allow_create && 'true' || 'false' }}
     steps:
       - name: Validate selected game
         run: |
@@ -91,7 +99,7 @@ jobs:
         env:
           GAME_URL: ${{ steps.before.outputs.game_url }}
       - name: Restore previous version if live verification fails
-        if: failure() && steps.deploy.outcome == 'success' && (steps.after.outcome == 'failure' || steps.live.outcome == 'failure')
+        if: failure() && steps.before.outputs.rollback_version != '' && steps.deploy.outcome == 'success' && (steps.after.outcome == 'failure' || steps.live.outcome == 'failure')
         run: npx --yes wrangler@4.149.0 rollback "$ROLLBACK_VERSION" --name "$GAME_WORKER" --yes
         env:
           ROLLBACK_VERSION: ${{ steps.before.outputs.rollback_version }}
