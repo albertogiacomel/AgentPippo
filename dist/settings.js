@@ -1,18 +1,33 @@
+// Shared settings preserve the classic-script/offline edition.
 'use strict';
 (function(){
  const I=window.PippoI18n,$=id=>document.getElementById(id);
- const button=document.createElement('button');button.id='settingsButton';I.text(button,'Impostazioni');document.querySelector('.tools').append(button);
- const language=document.createElement('button');language.id='languageToggle';language.textContent=I.settings.language==='it'?'EN':'IT';language.setAttribute('aria-label',I.settings.language==='it'?'Switch to English':'Passa a italiano');document.querySelector('.tools').append(language);
- const descriptions={easy:'Guidata: aiuti espliciti e note corrette conservate.',normal:'Normale: suggerimenti progressivi e melodia da ricominciare se sbagli.',challenge:'Sfida: meno indizi a schermo e un solo suggerimento iniziale.'};
- function describe(){I.text($('difficultyDescription'),descriptions[I.settings.difficulty]);}
- function setLanguage(value){I.update({language:value});}
- function refresh(){$('settingLanguage').value=I.settings.language;$('settingSounds').checked=I.settings.sounds;$('settingVoice').checked=window.PippoGame.getState().voice;$('settingDifficulty').value=I.settings.difficulty;language.textContent=I.settings.language==='it'?'EN':'IT';I.attribute(language,'aria-label',I.settings.language==='it'?'Passa a inglese':'Passa a italiano');describe();}
- button.onclick=()=>{refresh();$('settingsDialog').showModal();};
- $('closeSettings').onclick=()=>$('settingsDialog').close();
- $('settingLanguage').onchange=event=>setLanguage(event.target.value);
- language.onclick=()=>setLanguage(I.settings.language==='it'?'en':'it');
- $('settingSounds').onchange=event=>{I.update({sounds:event.target.checked});if(!event.target.checked)window.PippoGame.stopSounds();};
- $('settingVoice').onchange=event=>window.PippoGame.setVoice(event.target.checked);
- $('settingDifficulty').onchange=event=>{I.update({difficulty:event.target.value});window.PippoGame.resetHints();describe();};
- I.subscribe(refresh);refresh();
+ const kit=new window.VideoGamesKit.GameUIController({gameId:'agent-pippo',mount:document.querySelector('.tools')});
+ kit.settingsButton.id='settingsButton';kit.dialog.element.id='settingsDialog';kit.dialog.element.querySelector('header button').id='closeSettings';
+ const ids={language:'settingLanguage',effects:'settingSounds',voice:'settingVoice',difficulty:'settingDifficulty'};
+ for(const [key,id]of Object.entries(ids))kit.dialog.element.querySelector('[data-setting='+key+']').id=id;
+ const language=document.createElement('button');language.id='languageToggle';language.className='ag-button';document.querySelector('.tools').append(language);
+ let applying=false;
+ function apply(){
+  if(applying)return;applying=true;
+  try{
+   const p=kit.settings.getSnapshot();
+   I.update({language:p.language,sounds:!p.muted&&p.effects,difficulty:p.difficulty});
+   const voice=!p.muted&&p.voice;
+   if(window.PippoGame.getState().voice!==voice)window.PippoGame.setVoice(voice);
+   if(p.muted||!p.effects)window.PippoGame.stopSounds();
+   language.textContent=p.language==='it'?'EN':'IT';language.setAttribute('aria-label',p.language==='it'?'Switch to English':'Passa a italiano');
+  }finally{applying=false;}
+ }
+ kit.settings.subscribe(apply);
+ I.subscribe((value,before)=>{
+  if(applying)return;
+  const patch={};if(value.language!==before.language)patch.language=value.language;
+  if(value.difficulty!==before.difficulty)patch.difficulty=value.difficulty;
+  if(value.sounds!==before.sounds)patch.effects=value.sounds;
+  if(Object.keys(patch).length)kit.settings.update(patch);
+ });
+ language.onclick=()=>kit.settings.update({language:kit.settings.getSnapshot().language==='it'?'en':'it'});
+ $('voice').onclick=()=>kit.settings.update({voice:!kit.settings.getSnapshot().voice,muted:false});
+ apply();
 })();

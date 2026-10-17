@@ -33,8 +33,24 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm run build
+      - run: npm run test:kit
+      - name: Verify shared controls in Chrome
+        run: npm run test:kit:browser
+        env:
+          BROWSER_BINARY: /usr/bin/google-chrome
+      - name: Verify offline edition
+        run: npm run test:offline
+        env:
+          BROWSER_BINARY: /usr/bin/google-chrome
       - run: npm test
       - run: npm run test:cloud
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: game-kit-verification
+          path: |
+            artifacts/game-kit/*.json
+            artifacts/game-kit/*.png
   deploy:
     name: Publish Cloudflare
     needs: verify

@@ -1,0 +1,83 @@
+{
+  "name": "@albertogiacomel/videogames-kit",
+  "version": "0.2.0",
+  "files": [
+    {
+      "path": "src/assets.mjs",
+      "bytes": 1270,
+      "sha256": "f94f9bc3c815d21826822015ee0b961f013481337b4d34138015c8c6d7b0cb55"
+    },
+    {
+      "path": "src/audio.mjs",
+      "bytes": 4729,
+      "sha256": "cc23302155303d5011f50da82516dc08f3eee51b3fb062cfdd2afe50bf12548d"
+    },
+    {
+      "path": "src/fullscreen.mjs",
+      "bytes": 2107,
+      "sha256": "ea720792e33d99488bf9ba8ccf8955829370727aebc6b334b010c2a317071330"
+    },
+    {
+      "path": "src/i18n.mjs",
+      "bytes": 2900,
+      "sha256": "56b7cb38a729f54b5699a2c60a603fea8d0bc14da48e7f226c555cc4abbea3ef"
+    },
+    {
+      "path": "src/index.mjs",
+      "bytes": 505,
+      "sha256": "b6911e4dbcbd395a63fac950de2a921238dd9eda1d7f1dcfe6d8238b2cb474ed"
+    },
+    {
+      "path": "src/input.mjs",
+      "bytes": 5028,
+      "sha256": "1d51555c79b9bf9e69d7b62e3baa35ac31d5aee3cc47bed0fb76175b0c1ccde8"
+    },
+    {
+      "path": "src/integration.mjs",
+      "bytes": 9597,
+      "sha256": "52b82a55357ef630d71856a0b7e5a9e0bdd7124dcf007c3f90ef4f5f7dad13e6"
+    },
+    {
+      "path": "src/loop.mjs",
+      "bytes": 2042,
+      "sha256": "a35c6f350689b81e864e8c6ab38303272d6a5d8cd6b216a5091fa0c4d0ba6431"
+    },
+    {
+      "path": "src/profiles.mjs",
+      "bytes": 1203,
+      "sha256": "e976abd89284d54104c4e8982e89a140a569f793673e832c18e91ce22a9c13f1"
+    },
+    {
+      "path": "src/storage.mjs",
+      "bytes": 6355,
+      "sha256": "2e1890812d54330adaf4e547b18cea60649b160970c5297613d30c2489a290ac"
+    },
+    {
+      "path": "src/ui.mjs",
+      "bytes": 6439,
+      "sha256": "21b13b328642434b0f2caa4b1eb01524c1d2d4b6435c59a4f1af5621f73c3f21"
+    },
+    {
+      "path": "styles/game-ui.css",
+      "bytes": 3528,
+      "sha256": "8f92b8d754454b9dbfc10b845b178e57b96a2c20eb7db7d1c859fa9cbc20f5c0"
+    },
+    {
+      "path": "styles/integration.css",
+      "bytes": 1045,
+      "sha256": "91e32ace11642a88a7766d0b3f45cf1f96dbe251e85ddec816afab3faef18157"
+    }
+  ],
+  "classicArtifacts": [
+    {
+      "path": "game-kit.js",
+      "bytes": 41462,
+      "sha256": "55fb6df2eb70c2e6ebdefb10408c96591b5d4251f7e9be35c899cdeafe09c27f"
+    },
+    {
+      "path": "game-kit.css",
+      "bytes": 4574,
+      "sha256": "351eff58962860cf212475bbd3c3dc4c2762c5503a7b83f2b0493805b45a426e"
+    }
+  ]
+}

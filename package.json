@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "node scripts/build.cjs",
+    "build": "node scripts/game-kit-check.mjs && node scripts/build.cjs",
     "build:floppy": "python scripts/build_floppy.py",
     "test": "node scripts/game_test.cjs && node scripts/localization_test.cjs && node scripts/speech_test.cjs && node scripts/backend_test.mjs",
     "test:cloud": "node scripts/cloud_runtime_test.cjs",
@@ -15,7 +15,11 @@
     "dev:cloud": "wrangler pages dev dist --d1 DB --persist-to artifacts/cloudflare_local",
     "test:browser": "node scripts/browser_test.cjs",
     "dev": "node scripts/serve.cjs",
-    "start": "node scripts/serve.cjs"
+    "start": "node scripts/serve.cjs",
+    "check:kit": "node scripts/game-kit-check.mjs",
+    "test:kit": "node --test scripts/game-kit-test.mjs",
+    "test:kit:browser": "node scripts/game-kit-browser-test.mjs",
+    "test:offline": "node scripts/offline_test.mjs"
   },
   "devDependencies": {
     "acorn": "8.19.0",

@@ -1,3 +1,5 @@
+> Impostazioni e controlli condivisi: [integrazione Videogames Kit](docs/videogames-kit.md).
+
 # Agente Pippo — Il segreto di Porto Buffo
 
 Avventura web originale in italiano e inglese per bambini dai 6 anni. Estetica di avventura cartoon classica, sei fondali illustrati, personaggio animato ispirato alla reference dell’utente, dialoghi comici e storia collegata del Barone Sottosopra. Nessun combattimento, timer, penalità o acquisto reale.

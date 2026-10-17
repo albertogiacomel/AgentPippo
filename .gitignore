@@ -9,3 +9,7 @@ artifacts/*
 .wrangler/
 .env
 .env.*
+
+artifacts/
+
+.parcel-cache/

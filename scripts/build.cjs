@@ -9,7 +9,7 @@ for(const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)){
  if(!fs.existsSync(path.join(dist,resource)))throw new Error('Missing resource: '+resource);
 }
 for(const asset of ['scenes.png','characters.png','pippo.png','vehicles.png','props.png'])if(!fs.statSync(path.join(dist,'assets',asset)).size)throw new Error('Empty asset: '+asset);
-for(const script of ['engine.js','en.js','en_ui.js','content.js','i18n.js','art.js','speech.js','game.js','vehicles.js','cloud.js','settings.js']){
+for(const script of ['engine.js','en.js','en_ui.js','content.js','i18n.js','art.js','speech.js','game.js','vehicles.js','cloud.js','game-kit.js','settings.js']){
  const result=spawnSync(process.execPath,['--check',path.join(dist,script)],{stdio:'inherit'});
  if(result.error)throw new Error('Syntax check failed',{cause:result.error});
  if(result.status!==0)process.exit(result.status??1);

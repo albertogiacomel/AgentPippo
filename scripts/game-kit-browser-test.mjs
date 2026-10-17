@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { openBrowser, delay } from './game-kit-cdp.mjs';
+import { verifyGameplay } from './game-kit-gameplay.mjs';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const page=await openBrowser(join(root,'dist'),{entry:'/index.html',artifactsPath:join(root,'artifacts','game-kit'),blockRemoteAI:true});
+const {evaluate,command}=page;
+const wait=async expression=>{for(let i=0;i<400;i++){if(await evaluate(expression))return;await delay(25);}throw new Error('Browser condition failed: '+expression);};
+try{
+ await wait('Boolean(window.__gameKit)&&Boolean(document.querySelector("[data-kit-settings]"))');
+ const nativeText=()=>evaluate("(()=>{const root=document.body.cloneNode(true);root.querySelectorAll('.ag-dialog,.ag-kit-controls').forEach(n=>n.remove());return root.textContent.trim();})()");
+ const before=await nativeText();
+ await evaluate('window.__gameKit.settings.update({language:"en",theme:"dark",motion:"reduced",contrast:"high",muted:true})');
+ await wait('document.documentElement.lang==="en"&&document.documentElement.classList.contains("dark")');
+ await delay(50);assert.notEqual(await nativeText(),before,'Native game reacts to settings');
+ await evaluate('document.querySelector("[data-kit-settings]").click()');await wait('window.__gameKit.dialog.element.open');
+ assert.equal(await evaluate('window.__gameKit.dialog.element.querySelector("h2").textContent'),'Settings');
+ const select=key=>`window.__gameKit.dialog.element.querySelector('[data-setting=${key}]')`;
+ await evaluate(`(()=>{const e=${select('language')};e.value='it';e.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+ assert.equal(await evaluate('window.__gameKit.settings.getSnapshot().language'),'it');
+ const press=async(key,code,vk)=>{await command('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode:vk});await command('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode:vk});};
+ await press('Escape','Escape',27);await wait('!window.__gameKit.dialog.element.open');
+ await wait('document.activeElement.hasAttribute("data-kit-settings")');
+ await evaluate('window.__navigationPending=true');await command('Page.reload',{ignoreCache:true});
+ await wait('!window.__navigationPending&&Boolean(window.__gameKit)');
+ assert.equal(await evaluate('window.__gameKit.settings.getSnapshot().language'),'it');
+ assert.equal(await evaluate('window.__gameKit.settings.getSnapshot().theme'),'dark');
+ await evaluate('window.__gameKit.root.requestFullscreen=undefined;window.__gameKit.fullscreen.toggle()');
+ assert.equal(await evaluate('window.__gameKit.fullscreen.active'),true);await evaluate('window.__gameKit.fullscreen.toggle()');
+ // Exercise the real gamepad polling path with a deterministic virtual controller.
+ await evaluate("(()=>{const buttons=Array.from({length:16},()=>({pressed:false}));window.__kitPad={connected:true,axes:[0,0],buttons};Object.defineProperty(navigator,'getGamepads',{configurable:true,value:()=>[window.__kitPad]});buttons[8].pressed=true;})()");
+ await wait('window.__gameKit.dialog.element.open');
+ await evaluate('window.__kitPad.buttons[8].pressed=false');await delay(50);
+ await evaluate('window.__kitPad.buttons[1].pressed=true');await wait('!window.__gameKit.dialog.element.open');
+ await evaluate('window.__kitPad.buttons[1].pressed=false');
+ await command('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+ await evaluate('document.querySelector("[data-kit-settings]").click()');await wait('window.__gameKit.dialog.element.open');
+ assert.equal(await evaluate('window.__gameKit.dialog.element.scrollWidth<=window.__gameKit.dialog.element.clientWidth'),true);
+ const screenshot=await command('Page.captureScreenshot',{format:'png'});await writeFile(join(page.artifacts,'settings-mobile.png'),Buffer.from(screenshot.data,'base64'));
+ await verifyGameplay(page,'agent-pippo');
+ assert.deepEqual(page.errors,[]);
+ await writeFile(join(page.artifacts,'verification.json'),JSON.stringify({timestamp:new Date().toISOString(),status:'PASS',checks:['native language/theme wiring','persist/reload','Escape/focus','CSS fullscreen','gamepad menu','mobile settings','native gameplay action'],errors:page.errors},null,2),'utf8');
+ console.log('PASS shared game settings: native UI, persistence, focus, fullscreen, controller and mobile');
+}finally{await page.close();}

@@ -1,0 +1,10 @@
+.ag-game.ag-kit-host{padding:0;font-family:system-ui,sans-serif;min-height:100dvh}
+.ag-kit-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ag-kit-controls .ag-button{font-size:14px;padding:8px 12px;min-height:44px;line-height:1.2;white-space:nowrap}
+.ag-kit-mount{display:contents}
+.ag-kit-host .ag-dialog{font-family:system-ui,sans-serif;text-align:left;box-shadow:0 16px 60px #0005}
+.ag-kit-host .ag-dialog h2{font-family:inherit;text-transform:none;color:var(--ag-ink);text-shadow:none;transform:none}
+.ag-kit-host[data-ag-theme=light]{--ink:#233b38;--gold:#146e5c;--dim:#4c625e;--navy:#fbf8f0;--panel:#fff;--line:#bdc9c2}
+.ag-kit-host[data-ag-theme=light] .tools>button,.ag-kit-host[data-ag-theme=light] .verbs>button{color:var(--ag-ink);background:var(--ag-panel);border-color:var(--ag-border)}
+.ag-kit-host[data-ag-motion=reduced] canvas{scroll-behavior:auto}
+@media(max-width:480px){.ag-kit-controls{gap:5px}.ag-kit-controls .ag-button{font-size:12px;padding:8px}.ag-kit-host .ag-dialog{max-height:calc(100dvh - 24px)}}
