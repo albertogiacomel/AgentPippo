@@ -1,4 +1,4 @@
-// Deterministic browser checks via Edge's native DevTools protocol.
+// Deterministic browser checks via Chrome/Edge's native DevTools protocol.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
@@ -19,7 +19,10 @@ async function run(){
  });
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const url=process.env.AGENT_PIPPO_URL||'http://127.0.0.1:'+server.address().port;
- const binary=path.join(process.env['ProgramFiles(x86)'],'Microsoft','Edge','Application','msedge.exe');
+ const binary=[process.env.BROWSER_BINARY,
+  path.join(process.env['ProgramFiles(x86)']||'','Microsoft','Edge','Application','msedge.exe'),
+  '/usr/bin/google-chrome','/usr/bin/chromium'].filter(Boolean).find(fs.existsSync);
+ if(!binary)throw new Error('Set BROWSER_BINARY to an installed Chrome or Edge executable');
  const debugPort=await new Promise(resolve=>{const probe=http.createServer();probe.listen(0,'127.0.0.1',()=>{const port=probe.address().port;probe.close(()=>resolve(port));});});
  browser=spawn(binary,['--headless','--disable-gpu','--no-first-run','--remote-debugging-port='+debugPort,'--user-data-dir='+path.join(artifacts,'edge_v2_qa_'+Date.now()),url],{windowsHide:true,stdio:'ignore'});
  let pages;
