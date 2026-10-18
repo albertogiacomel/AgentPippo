@@ -1,0 +1,52 @@
+{
+  "name": "giacomel-site-privacy",
+  "version": "1.0.0",
+  "site": "agentpippo.giacomel.info",
+  "source": {
+    "repository": "albertogiacomel/videogames-kit",
+    "commit": "39c83343c6203c7d3ce34343471d5c0c9f4dd516",
+    "dirty": false
+  },
+  "files": [
+    {
+      "path": "runtime.js",
+      "bytes": 13884,
+      "sha256": "619b4ce7112847873c8bf724373c1adf5a92c8fbc731e825abf8f268110f49bb"
+    },
+    {
+      "path": "site.css",
+      "bytes": 2772,
+      "sha256": "487728db066c11ad8d7ddf44e02be51550d972f8d6566e3ea095f1e9239743dc"
+    },
+    {
+      "path": "privacy.html",
+      "bytes": 9180,
+      "sha256": "435c7d98e777d867a998cc4a8991f42d83ecd25028fc8233fcffced1104cab16"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 14,
+      "sha256": "a79691a93b46e49ce460c26ef22afcc03d6eca1e63bf2edbc20e96159510f6c9"
+    },
+    {
+      "path": "vendor/klaro-0.7.21/klaro-no-css.js",
+      "bytes": 212401,
+      "sha256": "add6fa3b97d78700b67180edb2074df5c7217011b7e746a9c47fd31c23426d11"
+    },
+    {
+      "path": "vendor/klaro-0.7.21/klaro.min.css",
+      "bytes": 19607,
+      "sha256": "20ab584ad65b1273502a8524f72c343a3b707180b1ec67fd7756a5ee63c6af36"
+    },
+    {
+      "path": "vendor/klaro-0.7.21/LICENSE",
+      "bytes": 1658,
+      "sha256": "77e99125636bef70b534cc86b6f890bf8b33b453d4a9402f3ff4b2cf26e7fa82"
+    },
+    {
+      "path": "vendor/klaro-0.7.21/provenance.json",
+      "bytes": 784,
+      "sha256": "435054a46a4e134d470239313a1ceee0e746896adba3f60f5c66c9ce705537ad"
+    }
+  ]
+}

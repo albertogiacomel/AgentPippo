@@ -5,7 +5,8 @@ async function build(){
  const files=[],images=JSON.parse(await fs.readFile(path.join(root,'docs','assets-manifest.json'),'utf8'));
  const text=new Map();
  for(const entry of await fs.readdir(source,{withFileTypes:true}))if(entry.isFile()){
-  const content=(await fs.readFile(path.join(source,entry.name),'utf8')).replace(/assets\/([a-z]+)\.png/g,'assets/$1.webp');
+  if(['privacy.html','ads.txt'].includes(entry.name))continue;
+  const content=(await fs.readFile(path.join(source,entry.name),'utf8')).replace(/assets\/([a-z]+)\.png/g,'assets/$1.webp').replace(/<script\b[^>]*data-site-profile="game"[^>]*><\/script>/g,'');
   text.set(entry.name,Buffer.from(content,'utf8'));
  }
  text.set('LEGGIMI.txt',Buffer.from('Agent Pippo - Edizione floppy\nEstrai tutto e apri index.html in un browser moderno.\nSei casi completi, italiano/inglese e salvataggi locali.\nLe voci dipendono dal dispositivo; alcune richiedono Internet.\nI salvataggi cloud richiedono il sito online: agentpippo.giacomel.info.\n','utf8'));

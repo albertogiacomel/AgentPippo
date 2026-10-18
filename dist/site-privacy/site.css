@@ -1,0 +1,27 @@
+.site-privacy-links{box-sizing:border-box;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:100%;max-width:72rem;margin:24px auto;padding:12px 16px;font:400 14px/1.5 system-ui,sans-serif;color:inherit}
+.site-privacy-links a,.site-privacy-links button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 14px;border:1px solid currentColor;border-radius:10px;background:transparent;color:inherit;font:600 14px/1.5 system-ui,sans-serif;text-decoration:underline;cursor:pointer}
+.site-privacy-links :focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+.site-ad{box-sizing:border-box;width:100%;min-width:0;margin:32px 0;padding:16px;border:1px solid #64748b;border-radius:16px;background:#fff;color:#1f2937}
+.site-ad[hidden]{display:none!important}
+.site-ad-label{margin:0 0 12px;font:600 14px/1.5 system-ui,sans-serif;color:inherit}
+.site-ad ins{min-height:100px}
+.dark .site-ad{background:#111827;color:#f8fafc}
+#klaro{--font-family:system-ui,sans-serif;--font-size:16px;--border-radius:12px;--dark1:#fff;--dark2:#f1f5f9;--dark3:#e2e8f0;--light1:#172033;--light2:#334155;--light3:#475569;--green1:#1d4ed8;--green2:#1e40af;--green3:#dbeafe;--blue1:#1d4ed8;--blue2:#1e40af;--blue3:#dbeafe}
+.dark #klaro{--dark1:#111827;--dark2:#1f2937;--dark3:#334155;--light1:#f8fafc;--light2:#e2e8f0;--light3:#cbd5e1}
+#klaro .cookie-modal,#klaro .cookie-notice,#klaro p,#klaro button,#klaro label{font-family:system-ui,sans-serif;font-size:16px;line-height:1.5}
+#klaro .cookie-modal .cm-modal{max-height:90dvh;overflow:auto;border-radius:16px}
+#klaro .cookie-modal .cm-modal,#klaro .cookie-notice{background:#fff;color:#172033}
+#klaro .cm-list-description,#klaro .cm-list-description span{color:#475569}
+#klaro a{color:#1645ad}
+.dark #klaro .cookie-modal .cm-modal,.dark #klaro .cookie-notice{background:#111827;color:#f8fafc}
+.dark #klaro .cm-list-description,.dark #klaro .cm-list-description span{color:#cbd5e1}
+.dark #klaro a{color:#93c5fd}
+#klaro .cm-btn{box-sizing:border-box;min-height:44px;white-space:normal;font:600 16px/1.4 system-ui,sans-serif}
+#klaro .cm-buttons,#klaro .cm-footer-buttons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#klaro .cm-buttons .cm-btn,#klaro .cm-footer-buttons .cm-btn{width:100%;min-width:0;margin:0}
+#klaro .cm-service{box-sizing:border-box;width:100%;min-width:0}
+#klaro .cm-service label{overflow-wrap:anywhere}
+#klaro .cm-list-title{font-size:15px;line-height:1.5}
+#klaro :focus-visible{outline:3px solid #2563eb;outline-offset:3px}
+@media(max-width:600px){#klaro .cm-buttons,#klaro .cm-footer-buttons{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){#klaro *{transition:none!important;animation:none!important}}
