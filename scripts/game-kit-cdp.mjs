@@ -71,7 +71,9 @@ export async function openBrowser(root, { entry = '/examples/index.html', artifa
       await command('Page.navigate', { url: url + entry });
     }
     const evaluate = async expression => {
-      const result = await command('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true });
+      const expr = typeof expression === 'function' ? '(' + expression.toString() + ')()' : expression;
+      if (typeof expr !== 'string') throw new TypeError('CDP evaluate requires string expression, got: ' + typeof expression);
+      const result = await command('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true });
       if (result.exceptionDetails) throw new Error(JSON.stringify(result.exceptionDetails));
       return result.result.value;
     };

@@ -25,6 +25,44 @@
   // Live serving stays off until the owner's Google privacy setup is complete.
   const liveAdsEnabled = false;
   const consent = { advertising: false, 'google-fonts': false, 'google-ai': false, analytics: false };
+
+  // Google Consent Mode v2 (Advanced Mode): define dataLayer and default consent signals before tag execution
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  if (typeof window.gtag !== 'function') window.gtag = gtag;
+  window.gtag('consent', 'default', {
+    ad_storage: 'denied',
+    analytics_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    wait_for_update: 500
+  });
+  window.gtag('set', 'ads_data_redaction', true);
+
+  function syncGoogleConsent() {
+    if (typeof window.gtag !== 'function') return;
+    const adAllowed = Boolean(consent.advertising);
+    const analyticsAllowed = Boolean(consent.analytics);
+    window.gtag('consent', 'update', {
+      ad_storage: adAllowed ? 'granted' : 'denied',
+      analytics_storage: analyticsAllowed ? 'granted' : 'denied',
+      ad_user_data: adAllowed ? 'granted' : 'denied',
+      ad_personalization: adAllowed ? 'granted' : 'denied'
+    });
+    if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push({
+        event: 'klaro_consent_update',
+        consents: { ...consent },
+        consent_mode_v2: {
+          ad_storage: adAllowed ? 'granted' : 'denied',
+          analytics_storage: analyticsAllowed ? 'granted' : 'denied',
+          ad_user_data: adAllowed ? 'granted' : 'denied',
+          ad_personalization: adAllowed ? 'granted' : 'denied'
+        }
+      });
+    }
+  }
+
   let manager, config, googlePromise, opener, modalWasOpen = false, consentReady = false, started = false;
   const initialized = new WeakSet();
   const boundChoices = new WeakSet();
@@ -38,10 +76,10 @@
       notice: 'Scegli se attivare servizi facoltativi. Puoi continuare senza: i progressi restano salvati.',
       description: 'Scegli solo ciò che ti serve. Per i minori decide un genitore o tutore; il pannello non verifica età o identità.',
       decline: 'Rifiuta facoltativi', accept: 'Salva scelte', save: 'Salva scelte',
-      ads: 'Pubblicità Google non personalizzata', adsBody: 'Servizio al momento spento. Se attivato: annunci senza personalizzazione o remarketing.',
+      ads: 'Pubblicità Google (Consent Mode v2)', adsBody: 'Annunci Google con Consent Mode v2 avanzato. Segnali ad_storage, ad_user_data e ad_personalization negati di default e aggiornati su tua scelta.',
       fonts: 'Caratteri Google', fontsBody: 'Caratteri scaricati da Google. In alternativa, quelli del dispositivo.',
       ai: 'Funzioni Google AI online', aiBody: 'Pronunce e suggerimenti online. Non inviare dati personali; restano le alternative locali.',
-      analytics: 'Statistiche di utilizzo', analyticsBody: 'Statistiche Vercel facoltative, dove presenti.',
+      analytics: 'Statistiche di utilizzo', analyticsBody: 'Statistiche facoltative con analytics_storage gestito via Consent Mode v2 dove presente.',
     },
     en: {
       privacy: 'Privacy', choices: 'Privacy preferences', ad: 'Advertisement',
@@ -49,19 +87,36 @@
       notice: 'Choose whether to enable optional services. You can continue without them; saved progress stays.',
       description: 'Choose only what you need. A parent or guardian decides for children; this panel does not verify age or identity.',
       decline: 'Decline optional', accept: 'Save choices', save: 'Save choices',
-      ads: 'Non-personalized Google advertising', adsBody: 'Currently off. If enabled: ads without personalization or remarketing.',
+      ads: 'Google advertising (Consent Mode v2)', adsBody: 'Google ads with advanced Consent Mode v2. Consent signals ad_storage, ad_user_data and ad_personalization denied by default and updated upon choice.',
       fonts: 'Google fonts', fontsBody: 'Fonts downloaded from Google. Device fonts are the alternative.',
       ai: 'Online Google AI features', aiBody: 'Online pronunciations and suggestions. Do not send personal data; local alternatives remain.',
-      analytics: 'Usage statistics', analyticsBody: 'Optional Vercel usage statistics, where available.',
+      analytics: 'Usage statistics', analyticsBody: 'Optional statistics with analytics_storage managed via Consent Mode v2 where present.',
     },
   };
   const api = {
-    version: '1.1.0',
+    version: '1.2.0',
     get ready() { return ready; },
     hasConsent: name => consentReady && consent[name] === true,
     open: async (source = document.activeElement) => { opener = source; await api.ready; window.klaro.show(config, true); },
     setLanguage,
-    getStatus: () => ({ consentReady, liveAdsEnabled, production, consent: { ...consent } }),
+    getStatus: () => ({ consentReady, liveAdsEnabled, production, consentMode: 'v2-advanced', consent: { ...consent } }),
+    getConsentMode: () => ({
+      version: 'v2',
+      mode: 'advanced',
+      default: {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
+      },
+      current: {
+        ad_storage: consent.advertising ? 'granted' : 'denied',
+        analytics_storage: consent.analytics ? 'granted' : 'denied',
+        ad_user_data: consent.advertising ? 'granted' : 'denied',
+        ad_personalization: consent.advertising ? 'granted' : 'denied'
+      }
+    }),
     // Dependency injection is used by the local regression fixture, never for live impressions.
     mountAd: (target, options = {}) => mountAd(target, options),
   };
@@ -87,6 +142,14 @@
     const key = 'privacy' + name.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
     document.documentElement.dataset[key] = value ? 'allowed' : 'denied';
     window.dispatchEvent(new CustomEvent('siteprivacychange', { detail: { service: name, allowed: Boolean(value) } }));
+    if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push({
+        event: 'klaro-' + name + '-' + (value ? 'accepted' : 'declined'),
+        service: name,
+        allowed: Boolean(value)
+      });
+    }
+    if (name === 'advertising' || name === 'analytics') syncGoogleConsent();
     if (name === 'google-fonts') {
       for (const link of document.querySelectorAll('link[data-privacy-font-href]')) {
         if (value) link.href = link.dataset.privacyFontHref;

@@ -1,17 +1,17 @@
 {
   "name": "giacomel-site-privacy",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "site": "agentpippo.giacomel.info",
   "source": {
     "repository": "albertogiacomel/videogames-kit",
-    "commit": "e75718da9affc6ef49335b858671638de64b67f1",
+    "commit": "61e5a5d2bcf7aed25dc603400305d4a8ce6bef4d",
     "dirty": false
   },
   "files": [
     {
       "path": "runtime.js",
-      "bytes": 21391,
-      "sha256": "e4e56612ac9b87bf14f6153face3936bea2240428e955c8496b6a1d47c8efc9a"
+      "bytes": 23932,
+      "sha256": "60e1a913472c213a4864c1859b3548de7916a77ff72a44ca8b851b43bedbfd95"
     },
     {
       "path": "site.css",
@@ -45,8 +45,8 @@
     },
     {
       "path": "privacy.html",
-      "bytes": 11107,
-      "sha256": "29467641ddd3259c38410830484ee0af4e4fbabdcc2dbbcd269a9e3a4fd2f303"
+      "bytes": 11642,
+      "sha256": "a4b8ed1ddb4be56b1ea08ff1e11e167d76d4b09228236d1a07d4ac972deec5bf"
     },
     {
       "path": ".gitattributes",
