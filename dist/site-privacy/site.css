@@ -12,7 +12,7 @@
 #klaro .cookie-modal .cm-modal{max-height:90dvh;overflow:auto;border-radius:16px}
 #klaro .cookie-modal .cm-modal,#klaro .cookie-notice{background:#fff;color:#172033}
 #klaro .cm-list-description,#klaro .cm-list-description span{color:#475569}
-#klaro a{color:#1645ad}
+#klaro a{color:#1645ad;text-decoration:underline;text-underline-offset:2px}
 .dark #klaro .cookie-modal .cm-modal,.dark #klaro .cookie-notice{background:#111827;color:#f8fafc}
 .dark #klaro .cm-list-description,.dark #klaro .cm-list-description span{color:#cbd5e1}
 .dark #klaro a{color:#93c5fd}
