@@ -84,3 +84,6 @@ html[data-site-profile=privacy] #klaro .cookie-notice{display:none}
 #klaro .cm-list-input:focus-visible + label{outline:3px solid #2563eb;outline-offset:4px;border-radius:4px}
 
 html[data-site-profile=portfolio] .container{max-width:var(--site-width)}
+
+.site-header [data-site-home]{min-width:44px;min-height:44px;padding:0}
+.site-header [data-site-home] img{display:block;width:32px;height:32px;max-width:none;border-radius:8px;object-fit:contain}

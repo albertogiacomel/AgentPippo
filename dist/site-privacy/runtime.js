@@ -214,8 +214,12 @@
     for (const button of document.querySelectorAll('.site-policy-action')) button.addEventListener('click', () => {
       void api.open(button).catch(() => { button.textContent = lang() === 'it' ? 'Preferenze non disponibili' : 'Preferences unavailable'; });
     });
-    const homeLink = () => {
-      const link = document.createElement('a'); link.href = 'https://www.giacomel.info/'; link.dataset.siteHome = ''; link.textContent = 'giacomel.info'; return link;
+    const homeLink = (image = false) => {
+      const link = document.createElement('a'); link.href = 'https://www.giacomel.info/'; link.dataset.siteHome = '';
+      if (image) {
+        const icon = document.createElement('img'); icon.src = new URL('favicon.svg', base); icon.width = 32; icon.height = 32; icon.alt = ''; link.appendChild(icon);
+      } else link.textContent = 'giacomel.info';
+      return link;
     };
     let header = document.querySelector('[data-site-header]');
     if (!header) {
@@ -226,7 +230,7 @@
       const button = document.createElement('button'); button.type = 'button'; button.dataset.siteLanguage = language; button.lang = language; button.textContent = language.toUpperCase();
       languages.appendChild(button);
     }
-    nav.append(homeLink(), languages); header.appendChild(nav); document.body.prepend(header);
+    nav.append(homeLink(true), languages); header.appendChild(nav); document.body.prepend(header);
     }
     for (const button of header.querySelectorAll('[data-site-language]')) button.addEventListener('click', () => setLanguage(button.dataset.siteLanguage));
     let footer = document.querySelector('[data-site-footer]');

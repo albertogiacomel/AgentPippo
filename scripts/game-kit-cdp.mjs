@@ -16,7 +16,7 @@ export async function openBrowser(root, { entry = '/examples/index.html', artifa
       const rel = relative(root, path);
       if (rel.startsWith('..') || isAbsolute(rel)) { res.writeHead(403).end(); return; }
       const data = await readFile(path);
-      res.setHeader('Content-Type', ({ '.html': 'text/html; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8' })[extname(path)] || 'application/octet-stream');
+      res.setHeader('Content-Type', ({ '.html': 'text/html; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' })[extname(path)] || 'application/octet-stream');
       res.end(data);
     } catch (error) { res.writeHead(error.code === 'ENOENT' ? 404 : 400).end(); }
   });
