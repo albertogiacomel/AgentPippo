@@ -64,8 +64,8 @@
 .site-policy-providers{padding-bottom:20px;margin-top:0}
 
 @media(max-width:600px){.site-header .site-shell-inner,.site-footer .site-shell-inner{padding:8px var(--site-gutter)}.site-footer .site-shell-inner{flex-direction:column;align-items:stretch;gap:4px}.site-footer [data-site-home]{justify-content:flex-start}.site-footer .site-privacy-links{width:100%}.site-policy{padding:32px var(--site-gutter) 20px}#klaro .cm-buttons,#klaro .cm-footer-buttons{grid-template-columns:minmax(0,1fr)}#klaro .cookie-modal .cm-modal{width:calc(100% - 16px);max-height:calc(100dvh - 16px);margin:8px}#klaro .cm-header,#klaro .cm-body,#klaro .cm-footer{padding:16px}}
-.fullscreen-mode .site-header,.fullscreen-mode .site-footer{display:none}
-@media(max-height:550px) and (orientation:landscape){.playing .site-header,.playing .site-footer{display:none}}
+:fullscreen .site-header,:fullscreen .site-footer,html:fullscreen .site-header,html:fullscreen .site-footer,body:fullscreen .site-header,body:fullscreen .site-footer,html:has(:fullscreen) .site-header,html:has(:fullscreen) .site-footer,body:has(:fullscreen) .site-header,body:has(:fullscreen) .site-footer,html:has(.ag-fullscreen) .site-header,html:has(.ag-fullscreen) .site-footer,body:has(.ag-fullscreen) .site-header,body:has(.ag-fullscreen) .site-footer,html.ag-fullscreen .site-header,html.ag-fullscreen .site-footer,body.ag-fullscreen .site-header,body.ag-fullscreen .site-footer,.fullscreen-mode .site-header,.fullscreen-mode .site-footer,.ag-fullscreen-active .site-header,.ag-fullscreen-active .site-footer,.ag-fullscreen ~ .site-header,.ag-fullscreen ~ .site-footer,.ag-fullscreen .site-header,.ag-fullscreen .site-footer{display:none!important}
+@media(max-height:550px) and (orientation:landscape){.playing .site-header,.playing .site-footer,.ag-game .site-header,.ag-game .site-footer,html:has(.ag-game) .site-header,html:has(.ag-game) .site-footer{display:none!important}}
 @media(prefers-reduced-motion:reduce){#klaro *, .site-header *, .site-footer *{transition:none!important;animation:none!important}}
 
 html[data-site-profile=portfolio]{--site-header-height:72px}

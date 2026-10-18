@@ -313,6 +313,16 @@
       observer.observe(document.body, { childList: true, subtree: true });
       setTimeout(() => observer.disconnect(), 15000);
     }
+    const syncFullscreen = () => {
+      const active = Boolean(document.fullscreenElement || document.querySelector('.ag-fullscreen'));
+      document.documentElement.classList.toggle('fullscreen-mode', active);
+      document.documentElement.classList.toggle('ag-fullscreen-active', active);
+      document.body?.classList?.toggle('fullscreen-mode', active);
+      document.body?.classList?.toggle('ag-fullscreen-active', active);
+    };
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    document.addEventListener('webkitfullscreenchange', syncFullscreen);
+    syncFullscreen();
   }
 
   function translations(language) {

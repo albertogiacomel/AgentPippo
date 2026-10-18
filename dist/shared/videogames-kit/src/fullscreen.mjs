@@ -1,7 +1,13 @@
 /** Native fullscreen with a CSS fallback, serialized toggles and lifecycle cleanup. */
 export class FullscreenController {
   #element; #document; #listeners = new Set(); #pending; #disposed = false; #onError;
-  #change = () => { for (const listener of [...this.#listeners]) listener(this.active); };
+  #sync = active => {
+    for (const el of [this.#document.documentElement, this.#document.body]) {
+      el?.classList?.toggle('ag-fullscreen-active', active);
+      el?.classList?.toggle('fullscreen-mode', active);
+    }
+  };
+  #change = () => { this.#sync(this.active); for (const listener of [...this.#listeners]) listener(this.active); };
   constructor(element, { document = element.ownerDocument, onError = () => {} } = {}) {
     this.#element = element; this.#document = document; this.#onError = onError;
     document.addEventListener('fullscreenchange', this.#change);
@@ -33,6 +39,6 @@ export class FullscreenController {
     if (this.#pending) await this.#pending;
     this.#element.classList.remove('ag-fullscreen');
     if (this.#document.fullscreenElement === this.#element) await this.#document.exitFullscreen();
-    this.#listeners.clear();
+    this.#sync(false); this.#listeners.clear();
   }
 }
