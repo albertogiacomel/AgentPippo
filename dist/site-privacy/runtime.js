@@ -191,11 +191,22 @@
   function bindChoices(button) {
     if (boundChoices.has(button)) return;
     boundChoices.add(button);
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
       const controller = window.__gameKit;
       controller?.lifecycle?.pause('privacy-consent');
-      controller?.dialog?.close();
-      void api.open(button).catch(() => { controller?.lifecycle?.resume('privacy-consent'); location.href = policyUrl(); });
+      try {
+        const dialog = controller?.dialog?.element;
+        // Native close restores the settings opener in a later task. Wait for it
+        // before Klaro takes focus, otherwise keyboard input escapes the modal.
+        if (dialog?.open) await new Promise(resolve => {
+          dialog.addEventListener('close', resolve, { once: true });
+          controller.dialog.close();
+        });
+        await api.open(button);
+      } catch (error) {
+        document.documentElement.dataset.privacyError = error.message;
+        controller?.lifecycle?.resume('privacy-consent'); location.href = policyUrl();
+      }
     });
   }
 

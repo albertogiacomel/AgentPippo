@@ -4,14 +4,14 @@
   "site": "agentpippo.giacomel.info",
   "source": {
     "repository": "albertogiacomel/videogames-kit",
-    "commit": "b438682be9aa19930c837d779a21d61104fbd81b",
+    "commit": "e00b9365f7b73a8b0435ef35b0da4b8ba8f19fd5",
     "dirty": false
   },
   "files": [
     {
       "path": "runtime.js",
-      "bytes": 20699,
-      "sha256": "97d0ee10dfc14980811293789ab5eb8c710828bb873615e5ecc96ea8ca189804"
+      "bytes": 21169,
+      "sha256": "a52ec8ead56caeca24ed46d065c4fc7559edd3c47756a6f83d1944dbbed0110d"
     },
     {
       "path": "site.css",
