@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createIntegratedSettings } from '../dist/shared/videogames-kit/src/integration.mjs';
+import { createIntegratedSettings } from '../dist/shared/videogames-kit/src/integration.js';
 const gameId = 'agent-pippo';
 const fixtures = {
   'agent-pippo': { agent_pippo_settings: JSON.stringify({language:'en',sounds:false,difficulty:'challenge'}) },

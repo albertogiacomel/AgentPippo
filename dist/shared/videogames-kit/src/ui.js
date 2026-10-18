@@ -1,4 +1,4 @@
-import { I18n, UI_MESSAGES } from './i18n.mjs';
+import { I18n, UI_MESSAGES } from './i18n.js';
 
 /** Scoped appearance; cleanup restores the original host attributes. */
 export class AppearanceController {

@@ -1,9 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { fileURLToPath } from 'node:url';
-import { join } from 'node:path';
-const root = fileURLToPath(new URL('../', import.meta.url));
+import { resolve,  join  } from 'node:path';
+const root = resolve(import.meta.dirname, '..');
 const publicRoot = join(root, 'dist');
 const directory = join(publicRoot, 'site-privacy');
 const manifest = JSON.parse(await readFile(join(directory, 'manifest.json'), 'utf8'));

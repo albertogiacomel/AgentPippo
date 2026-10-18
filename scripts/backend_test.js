@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {handleSave} from '../backend/save.mjs';
+import {handleSave} from '../backend/save.js';
 import E from '../dist/engine.js';
 const url='https://pippo.example/api/save',key='a'.repeat(64);
 const request=(method='GET',payload,token=key,origin)=>new Request(url,{method,headers:{Authorization:'Bearer '+token,...(payload?{'Content-Type':'application/json'}:{}),...(origin?{Origin:origin}:{})},body:payload?JSON.stringify(payload):undefined});

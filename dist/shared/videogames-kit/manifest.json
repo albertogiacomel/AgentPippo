@@ -4,73 +4,73 @@
   "source": {
     "repository": "albertogiacomel/videogames-kit",
     "commit": "36ae947dad6ec6db3697fbec9e5bb027472cc46d",
-    "dirty": false
+    "dirty": true
   },
   "files": [
     {
-      "path": "src/assets.mjs",
+      "path": "src/assets.js",
       "bytes": 1249,
       "sha256": "44919283e55534e9284b2e339370910fb240a83a81b0dafd87d28ee884e0b459"
     },
     {
-      "path": "src/audio.mjs",
+      "path": "src/audio.js",
       "bytes": 4658,
       "sha256": "dccbde2b2557956b662d1206491dfd1569ec406d6ce38259bf7dbe52a3b96c45"
     },
     {
-      "path": "src/fullscreen.mjs",
+      "path": "src/fullscreen.js",
       "bytes": 2341,
       "sha256": "52da8bea61b4f6ab794ea815ae3300ada493d85314975ff883a114dc6fd1fe7a"
     },
     {
-      "path": "src/i18n.mjs",
+      "path": "src/i18n.js",
       "bytes": 3567,
       "sha256": "5d85e5c11ab9d84eb4c80a83db0644c585637a64cb9c52ec089282a2b2642d29"
     },
     {
-      "path": "src/index.mjs",
-      "bytes": 610,
-      "sha256": "d8c74be4b5dcf3013eb62ec87d2ee07f98bbfad3036314c7eef60bbf19e8cdc3"
+      "path": "src/index.js",
+      "bytes": 600,
+      "sha256": "e1be9e90229959077830afc39a64176af86617faf5b8e0aef9b6cc5693add85c"
     },
     {
-      "path": "src/input.mjs",
+      "path": "src/input.js",
       "bytes": 4988,
       "sha256": "f9f364bf77353b86b0d5f7ef2d0080e554bed3ae78fbf2fe73a97bb06d7305cf"
     },
     {
-      "path": "src/integration.mjs",
-      "bytes": 9146,
-      "sha256": "4a03bde4fae8a73dbf268554a6ecff2c41d151512a70c740b181fc09bd11395e"
+      "path": "src/integration.js",
+      "bytes": 9138,
+      "sha256": "c5ae179fbce25707e9b57d95eb8c859430987ddbe1432229046b136423b192cb"
     },
     {
-      "path": "src/lifecycle.mjs",
+      "path": "src/lifecycle.js",
       "bytes": 1920,
       "sha256": "d3e674066a4fe05229b1e8a7a9fb90ac402f24b85ecd070b083edfcb8fb44e1b"
     },
     {
-      "path": "src/loop.mjs",
+      "path": "src/loop.js",
       "bytes": 2004,
       "sha256": "c9cd67fe3f05c1b513ed2d7c5232d98bc4d910cdccc423d3d293e6ec2576f20a"
     },
     {
-      "path": "src/presets.mjs",
+      "path": "src/presets.js",
       "bytes": 1753,
       "sha256": "aaba146901377dcd88dd997cb17ccc60c2d8db10dc336f57583811479cdfcc9e"
     },
     {
-      "path": "src/profiles.mjs",
-      "bytes": 2380,
-      "sha256": "383bca7d05eca8624698f84d00d64fbd92f7c85ca1a518c33665b10072ad2ff5"
+      "path": "src/profiles.js",
+      "bytes": 2378,
+      "sha256": "1f73d1a7c160c17fa979d0809e33c173cb79f8dbb3ac0ff8f647aca8c55e2775"
     },
     {
-      "path": "src/storage.mjs",
+      "path": "src/storage.js",
       "bytes": 6235,
       "sha256": "89f7b56dce9723a5a395c36778dbb106f589f52cde2abc6fe28d9b5a6a4f2969"
     },
     {
-      "path": "src/ui.mjs",
-      "bytes": 7795,
-      "sha256": "8c07f1ef0792291b12809e9f0d79df76f55715aa18caaa453012d800850d11fa"
+      "path": "src/ui.js",
+      "bytes": 7794,
+      "sha256": "a609e126c7710c9f2caf7f10d0df7f6fea32f01249c7d78f678e2ac8cb83345b"
     },
     {
       "path": "styles/game-ui.css",

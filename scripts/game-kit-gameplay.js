@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { delay } from './game-kit-cdp.mjs';
+import { delay } from './game-kit-cdp.js';
 export async function verifyGameplay(page, gameId) {
  const {evaluate,command}=page;
  const wait=async expression=>{for(let i=0;i<160;i++){if(await evaluate(expression))return;await delay(50);}throw new Error('Gameplay: '+gameId+' '+expression);};

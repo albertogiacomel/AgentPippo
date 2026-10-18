@@ -1,10 +1,9 @@
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import { join } from 'node:path';
-import { openBrowser, delay } from './game-kit-cdp.mjs';
-import { verifyGameplay } from './game-kit-gameplay.mjs';
-const root=fileURLToPath(new URL('../',import.meta.url));
+import { resolve,  join  } from 'node:path';
+import { openBrowser, delay } from './game-kit-cdp.js';
+import { verifyGameplay } from './game-kit-gameplay.js';
+const root = resolve(import.meta.dirname, '..');
 const page=await openBrowser(join(root,'dist'),{entry:'/index.html',artifactsPath:join(root,'artifacts','game-kit'),blockRemoteAI:true});
 const {evaluate,command}=page;
 const wait=async expression=>{for(let i=0;i<400;i++){if(await evaluate(expression))return;await delay(25);}throw new Error('Browser condition failed: '+expression);};

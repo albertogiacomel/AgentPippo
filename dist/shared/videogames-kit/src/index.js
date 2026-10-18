@@ -1,0 +1,10 @@
+export { VersionedStore, SettingsStore, SETTINGS_DEFAULTS } from './storage.js';
+export { I18n, UI_MESSAGES } from './i18n.js';
+export { InputManager } from './input.js';
+export { AudioManager } from './audio.js';
+export { FullscreenController } from './fullscreen.js';
+export { FixedStepLoop } from './loop.js';
+export { AssetLoader } from './assets.js';
+export { AppearanceController, SettingsDialog } from './ui.js';
+export { GAME_PROFILES, createGameSettings, registerGameProfile, getGameProfile, listGameProfiles } from './profiles.js';
+export { GameLifecycleController } from './lifecycle.js';

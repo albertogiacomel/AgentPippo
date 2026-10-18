@@ -4,8 +4,8 @@ import { pathToFileURL } from 'node:url';
 import { writeFile, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 const root = resolve('.'), artifacts = join(root, 'artifacts/worker-recovery');
-const { openBrowser, delay } = await import(pathToFileURL(join(root, 'scripts/game-kit-cdp.mjs')));
-const { verifyGameplay } = await import(pathToFileURL(join(root, 'scripts/game-kit-gameplay.mjs')));
+const { openBrowser, delay } = await import(pathToFileURL(join(root, 'scripts/game-kit-cdp.js')));
+const { verifyGameplay } = await import(pathToFileURL(join(root, 'scripts/game-kit-gameplay.js')));
 const page = await openBrowser(root, { entry: '/dist/index.html', artifactsPath: artifacts, blockRemoteAI: true });
 try {
   await page.command('Page.navigate', { url: process.env.GAME_URL });

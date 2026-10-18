@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { join } from 'node:path';
-import { openBrowser, delay } from './game-kit-cdp.mjs';
+import { openBrowser, delay } from './game-kit-cdp.js';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const page=await openBrowser(join(root,'dist'),{entry:'/index.html',artifactsPath:join(root,'artifacts/offline'),blockRemoteAI:true});
 const checked=[];

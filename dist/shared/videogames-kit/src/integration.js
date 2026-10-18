@@ -1,11 +1,11 @@
-import { SettingsStore, SETTINGS_DEFAULTS } from './storage.mjs';
-import { getGameProfile } from './profiles.mjs';
-import { GameLifecycleController } from './lifecycle.mjs';
-import { I18n, UI_MESSAGES } from './i18n.mjs';
-import { AppearanceController, SettingsDialog } from './ui.mjs';
-import { FullscreenController } from './fullscreen.mjs';
-import { AudioManager } from './audio.mjs';
-import { InputManager } from './input.mjs';
+import { SettingsStore, SETTINGS_DEFAULTS } from './storage.js';
+import { getGameProfile } from './profiles.js';
+import { GameLifecycleController } from './lifecycle.js';
+import { I18n, UI_MESSAGES } from './i18n.js';
+import { AppearanceController, SettingsDialog } from './ui.js';
+import { FullscreenController } from './fullscreen.js';
+import { AudioManager } from './audio.js';
+import { InputManager } from './input.js';
 
 const stores = new Map(), controllers = new Map();
 export function createIntegratedSettings(gameId, { storage = () => globalThis.localStorage, onError } = {}) {
