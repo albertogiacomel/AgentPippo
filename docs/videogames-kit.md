@@ -17,3 +17,5 @@ UX 0.3.0: impostazioni raggruppate per argomento, messaggio sulle modifiche imme
 Allineamento: le select delle impostazioni hanno la stessa larghezza e la stessa colonna, indipendentemente dall’etichetta. I gruppi di schede usano colonne uguali con spaziatura comune; gli stati selezionati mantengono le dimensioni dei box. I test browser misurano i bordi e le larghezze su desktop e mobile.
 
 Tipografia 0.3.0: font di sistema condiviso, controlli a 16 px, etichette a 15 px e feedback a 14 px; titoli responsive e interlinea uniforme. Le dimensioni in rem rispettano le preferenze del browser. Nessun font aggiuntivo da scaricare.
+
+Il CSS del vecchio dialogo è limitato ai dialoghi privi della classe comune: non può sovrascrivere griglia, larghezze o font del kit. Il test completo verifica select di almeno 16 px e colonne uguali anche su mobile.
